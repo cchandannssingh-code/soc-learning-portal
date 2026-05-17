@@ -1,28 +1,69 @@
-4624: An account was successfully logged on
+---
+title: "Event ID 4624"
+---
 
-On this page
+# Event ID 4624
 
-Description of this event
-Field level details
-Examples
-This is a highly valuable event since it documents each and every successful attempt to logon to the local computer regardless of logon type, location of the user or type of account.  You can tie this event to logoff events 4634 and 4647 using Logon ID.
+## Description
 
-Win2012 adds the Impersonation Level field as shown in the example.
+Event ID 4624 indicates:
 
-Win2016/10 add further fields explained below.
+- Successful logon
+- Authentication success
+- User login tracking
 
+---
 
-public/
- └── images/
-      ├── kerberos-flow.png
-      ├── event-4648-diagram.png
-      └── psexec-flow.png
+## Why It Is Important
 
+This event is highly valuable because it documents:
 
-      # Kerberos Authentication Flow
+- Every successful login attempt
+- User account usage
+- Logon type
+- Source workstation
+- Authentication activity
+
+---
+
+## Important Fields
+
+| Field | Description |
+|---|---|
+| Account Name | User logged in |
+| Source IP | Login source |
+| Logon Type | Interactive/Remote/etc |
+| Workstation Name | Device name |
+
+---
+
+## Related Events
+
+- 4634 → Logoff
+- 4647 → User initiated logoff
+- 4648 → Explicit credentials used
+
+---
+
+## Example SPL Query
+
+```spl
+index=windows EventCode=4624
+```
+
+---
+
+## Investigation Tips
+
+1. Check unusual login hours
+2. Verify source IP
+3. Correlate with failed logons
+4. Look for lateral movement
+
+---
+
+## Kerberos Authentication Flow
 
 ![Kerberos Flow](/images/kerberos-flow.png)
-
-## Explanation
 
 Client requests TGT from KDC.

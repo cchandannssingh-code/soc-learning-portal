@@ -53,40 +53,6 @@ const questions = [
     explanation:
       "LSASS handles authentication and security token creation.",
   },
-
-  {
-    question:
-      "Which protocol is preferred in Active Directory?",
-
-    options: [
-      "FTP",
-      "SNMP",
-      "Kerberos",
-      "SSH",
-    ],
-
-    answer: 2,
-
-    explanation:
-      "Kerberos is the default authentication protocol in AD.",
-  },
-
-  {
-    question:
-      "Which event commonly correlates with 4648?",
-
-    options: [
-      "4624",
-      "1102",
-      "7040",
-      "5158",
-    ],
-
-    answer: 0,
-
-    explanation:
-      "4624 indicates successful logon activity.",
-  },
 ];
 
 export default function WindowsAssessment() {
@@ -149,57 +115,21 @@ export default function WindowsAssessment() {
   if (completed) {
 
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "#0f1117",
-          color: "white",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "40px",
-        }}
-      >
+      <div className="max-w-4xl mx-auto">
 
-        <div
-          style={{
-            background: "#161b22",
-            padding: "50px",
-            borderRadius: "24px",
-            width: "100%",
-            maxWidth: "700px",
-          }}
-        >
+        <div className="bg-white border border-slate-200 rounded-2xl p-10 shadow-sm">
 
-          <h1
-            style={{
-              fontSize: "38px",
-              marginBottom: "20px",
-            }}
-          >
+          <h1 className="text-4xl font-bold text-slate-900 mb-4">
             Assessment Complete
           </h1>
 
-          <p
-            style={{
-              fontSize: "22px",
-              marginBottom: "30px",
-            }}
-          >
-            Score: {score} / {questions.length}
+          <p className="text-lg text-slate-600 mb-8">
+            Your Score: {score} / {questions.length}
           </p>
 
           <button
             onClick={restartQuiz}
-            style={{
-              background: "#00d9ff",
-              color: "black",
-              border: "none",
-              padding: "14px 28px",
-              borderRadius: "12px",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
+            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-medium transition"
           >
             Restart Assessment
           </button>
@@ -211,60 +141,27 @@ export default function WindowsAssessment() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0f1117",
-        color: "white",
-        padding: "50px",
-      }}
-    >
+    <div className="max-w-4xl mx-auto">
 
-      <div
-        style={{
-          maxWidth: "900px",
-          margin: "0 auto",
-          background: "#161b22",
-          padding: "50px",
-          borderRadius: "24px",
-        }}
-      >
+      <div className="bg-white border border-slate-200 rounded-2xl p-8 md:p-10 shadow-sm">
 
-        <h1
-          style={{
-            fontSize: "40px",
-            marginBottom: "10px",
-          }}
-        >
-          Windows Assessment
-        </h1>
+        <div className="mb-8">
 
-        <p
-          style={{
-            color: "#aaa",
-            marginBottom: "40px",
-          }}
-        >
-          Question {current + 1} of {questions.length}
-        </p>
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">
+            Windows Assessment
+          </h1>
 
-        <h2
-          style={{
-            fontSize: "28px",
-            marginBottom: "30px",
-            lineHeight: "1.5",
-          }}
-        >
+          <p className="text-slate-500">
+            Question {current + 1} of {questions.length}
+          </p>
+
+        </div>
+
+        <h2 className="text-2xl font-semibold text-slate-800 leading-relaxed mb-8">
           {q.question}
         </h2>
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "16px",
-          }}
-        >
+        <div className="space-y-4">
 
           {q.options.map((option, index) => {
 
@@ -274,19 +171,34 @@ export default function WindowsAssessment() {
             const isSelected =
               index === selected;
 
-            let background = "#222";
+            let classes =
+              "w-full text-left px-5 py-4 rounded-xl border transition text-[15px]";
 
-            if (showAnswer) {
+            if (!showAnswer) {
+
+              classes += isSelected
+                ? " bg-blue-50 border-blue-500"
+                : " bg-white border-slate-200 hover:border-blue-400 hover:bg-slate-50";
+
+            } else {
 
               if (isCorrect) {
-                background = "#14532d";
-              }
 
-              if (
+                classes +=
+                  " bg-green-50 border-green-500 text-green-900";
+
+              } else if (
                 isSelected &&
                 !isCorrect
               ) {
-                background = "#7f1d1d";
+
+                classes +=
+                  " bg-red-50 border-red-500 text-red-900";
+
+              } else {
+
+                classes +=
+                  " bg-white border-slate-200";
               }
             }
 
@@ -297,19 +209,7 @@ export default function WindowsAssessment() {
                 onClick={() =>
                   setSelected(index)
                 }
-                style={{
-                  background,
-                  color: "white",
-                  border: isSelected
-                    ? "2px solid #00d9ff"
-                    : "1px solid #444",
-                  padding: "18px",
-                  borderRadius: "14px",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  fontSize: "18px",
-                  transition: "0.3s",
-                }}
+                className={classes}
               >
                 {option}
               </button>
@@ -320,65 +220,35 @@ export default function WindowsAssessment() {
 
         {showAnswer && (
 
-          <div
-            style={{
-              marginTop: "30px",
-              background: "#222",
-              padding: "24px",
-              borderRadius: "16px",
-              lineHeight: "1.8",
-            }}
-          >
+          <div className="mt-8 bg-slate-50 border border-slate-200 rounded-xl p-6">
 
-            <h3
-              style={{
-                marginBottom: "10px",
-              }}
-            >
+            <h3 className="text-lg font-semibold text-slate-800 mb-3">
               Explanation
             </h3>
 
-            <p>{q.explanation}</p>
+            <p className="text-slate-600 leading-relaxed">
+              {q.explanation}
+            </p>
 
           </div>
         )}
 
-        <div
-          style={{
-            marginTop: "40px",
-          }}
-        >
+        <div className="mt-10">
 
           {!showAnswer ? (
 
             <button
               onClick={handleSubmit}
-              style={{
-                background: "#00d9ff",
-                color: "black",
-                border: "none",
-                padding: "14px 28px",
-                borderRadius: "12px",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
+              className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-medium transition"
             >
-              Submit
+              Submit Answer
             </button>
 
           ) : (
 
             <button
               onClick={handleNext}
-              style={{
-                background: "#00d9ff",
-                color: "black",
-                border: "none",
-                padding: "14px 28px",
-                borderRadius: "12px",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
+              className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-medium transition"
             >
               Next Question
             </button>
