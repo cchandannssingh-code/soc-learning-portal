@@ -15,6 +15,9 @@ export default function Sidebar({
     windows: true,
   })
 
+  const [mobileOpen, setMobileOpen] =
+    useState(false)
+
   const groupedNotes = notes.reduce((acc: any, note: any) => {
     if (!acc[note.category]) {
       acc[note.category] = []
@@ -33,89 +36,153 @@ export default function Sidebar({
   }
 
   return (
-    <div className="w-full md:w-72 h-screen sticky top-0 bg-[#071224] text-white p-5 overflow-y-auto">
-      <h1 className="text-2xl font-bold mb-8 tracking-wide">
-        SOC Portal
-      </h1>
+    <>
+      {/* MOBILE TOP BAR */}
 
-      <div className="space-y-4">
-        {Object.entries(groupedNotes).map(
-          ([category, categoryNotes]: any) => (
-            <div
-              key={category}
-              className="bg-[#0d1b31] rounded-xl overflow-hidden border border-[#1e3354]"
-            >
-              <button
-                onClick={() => toggleSection(category)}
-                className={`
-                  w-full flex items-center justify-between px-4 py-3
-                  font-semibold uppercase tracking-wide transition
-                  ${
-                    openSections[category]
-                      ? "bg-[#132541] text-cyan-300"
-                      : "text-blue-300 hover:bg-[#132541]"
-                  }
-                `}
-              >
-                <span>{category}</span>
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#071224] border-b border-[#1e3354] px-4 py-3 flex items-center justify-between">
+        <h1 className="text-white font-bold text-lg">
+          SOC Portal
+        </h1>
 
-                <span className="text-sm">
-                  {openSections[category] ? "▼" : "▶"}
-                </span>
-              </button>
+        <button
+          onClick={() =>
+            setMobileOpen(!mobileOpen)
+          }
+          className="text-white text-xl"
+        >
+          ☰
+        </button>
+      </div>
 
+      {/* MOBILE OVERLAY */}
+
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* SIDEBAR */}
+
+      <div
+        className={`
+          fixed md:sticky top-0 left-0 z-50
+          w-72 h-screen bg-[#071224]
+          text-white p-5 overflow-y-auto
+          transition-transform duration-300
+          border-r border-[#1e3354]
+
+          ${
+            mobileOpen
+              ? "translate-x-0"
+              : "-translate-x-full"
+          }
+
+          md:translate-x-0
+        `}
+      >
+        <div className="flex items-center justify-between mb-8 mt-10 md:mt-0">
+          <h1 className="text-2xl font-bold tracking-wide">
+            SOC Portal
+          </h1>
+
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="md:hidden text-xl"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {Object.entries(groupedNotes).map(
+            ([category, categoryNotes]: any) => (
               <div
-                className={`
-                  overflow-hidden transition-all duration-300 ease-in-out
-                  ${
-                    openSections[category]
-                      ? "max-h-[500px] opacity-100"
-                      : "max-h-0 opacity-0"
-                  }
-                `}
+                key={category}
+                className="bg-[#0d1b31] rounded-xl overflow-hidden border border-[#1e3354]"
               >
-                <div className="p-3 space-y-2">
-                  {categoryNotes.map((note: any) => {
-                    const isActive =
-                      pathname === `/notes/${note.slug}`
+                <button
+                  onClick={() => toggleSection(category)}
+                  className={`
+                    w-full flex items-center justify-between px-4 py-3
+                    font-semibold uppercase tracking-wide transition
+                    ${
+                      openSections[category]
+                        ? "bg-[#132541] text-cyan-300"
+                        : "text-blue-300 hover:bg-[#132541]"
+                    }
+                  `}
+                >
+                  <span>{category}</span>
 
-                    return (
-                      <Link
-                        key={note.slug}
-                        href={`/notes/${note.slug}`}
-                        className={`
-                          block px-3 py-2 rounded-lg text-sm transition
-                          ${
-                            isActive
-                              ? "bg-cyan-700 text-white"
-                              : "bg-[#162847] hover:bg-[#1c345d]"
+                  <span className="text-sm">
+                    {openSections[category]
+                      ? "▼"
+                      : "▶"}
+                  </span>
+                </button>
+
+                <div
+                  className={`
+                    overflow-hidden transition-all duration-300 ease-in-out
+                    ${
+                      openSections[category]
+                        ? "max-h-[500px] opacity-100"
+                        : "max-h-0 opacity-0"
+                    }
+                  `}
+                >
+                  <div className="p-3 space-y-2">
+                    {categoryNotes.map((note: any) => {
+                      const isActive =
+                        pathname === `/notes/${note.slug}`
+
+                      return (
+                        <Link
+                          key={note.slug}
+                          href={`/notes/${note.slug}`}
+                          onClick={() =>
+                            setMobileOpen(false)
                           }
-                        `}
-                      >
-                        {note.title}
-                      </Link>
-                    )
-                  })}
+                          className={`
+                            block px-3 py-2 rounded-lg text-sm transition
+                            ${
+                              isActive
+                                ? "bg-cyan-700 text-white"
+                                : "bg-[#162847] hover:bg-[#1c345d]"
+                            }
+                          `}
+                        >
+                          {note.title}
+                        </Link>
+                      )
+                    })}
 
-                  <Link
-                    href={`/assessment/${category}`}
-                    className={`
-                      block px-3 py-2 rounded-lg text-sm font-medium transition
-                      ${
-                        pathname === `/assessment/${category}`
-                          ? "bg-blue-600 text-white"
-                          : "bg-[#162847] hover:bg-[#1c345d]"
+                    <Link
+                      href={`/assessment/${category}`}
+                      onClick={() =>
+                        setMobileOpen(false)
                       }
-                    `}
-                  >
-                    Assessment
-                  </Link>
+                      className={`
+                        block px-3 py-2 rounded-lg text-sm font-medium transition
+                        ${
+                          pathname ===
+                          `/assessment/${category}`
+                            ? "bg-blue-600 text-white"
+                            : "bg-[#162847] hover:bg-[#1c345d]"
+                        }
+                      `}
+                    >
+                      Assessment
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          )
-        )}
+            )
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
