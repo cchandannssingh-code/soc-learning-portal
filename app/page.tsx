@@ -16,6 +16,7 @@ export default function HomePage() {
     <div
       style={{
         display: "flex",
+        flexWrap: "wrap",
         minHeight: "100vh",
         background: "#0f1117",
         color: "white",
@@ -25,9 +26,10 @@ export default function HomePage() {
       {/* LEFT SIDEBAR */}
       <div
         style={{
-          width: "320px",
+          width: "100%",
+          maxWidth: "320px",
           borderRight: "1px solid #333",
-          padding: "24px",
+          padding: "20px",
           background: "#161b22",
           overflowY: "auto",
         }}
@@ -35,8 +37,8 @@ export default function HomePage() {
 
         <h1
           style={{
-            fontSize: "30px",
-            marginBottom: "40px",
+            fontSize: "24px",
+            marginBottom: "35px",
             textAlign: "center",
             fontWeight: "bold",
           }}
@@ -61,33 +63,36 @@ export default function HomePage() {
             <div
               key={category}
               style={{
-                marginBottom: "35px",
+                marginBottom: "30px",
               }}
             >
 
               {/* CATEGORY */}
-              <h2
+              <Link
+                href={`/notes/${files[0].replace(".md", "")}`}
                 style={{
                   color: "#00d9ff",
-                  marginBottom: "16px",
-                  fontSize: "18px",
+                  marginBottom: "14px",
+                  fontSize: "15px",
                   textTransform: "uppercase",
+                  textDecoration: "none",
+                  display: "block",
+                  fontWeight: "bold",
                 }}
               >
                 ▼ {category}
-              </h2>
+              </Link>
 
-              {/* NOTES + ASSESSMENT */}
+              {/* NOTES */}
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "10px",
-                  paddingLeft: "12px",
+                  gap: "8px",
+                  paddingLeft: "10px",
                 }}
               >
 
-                {/* NOTE FILES */}
                 {files.map((file) => {
 
                   const slug =
@@ -100,10 +105,11 @@ export default function HomePage() {
                       style={{
                         color: "#ddd",
                         textDecoration: "none",
-                        padding: "12px 14px",
+                        padding: "9px 12px",
                         borderRadius: "12px",
                         background: "transparent",
                         transition: "0.3s",
+                        fontSize: "14px",
                       }}
                     >
                       ▶{" "}
@@ -115,20 +121,21 @@ export default function HomePage() {
                   );
                 })}
 
-                {/* ASSESSMENT BUTTON */}
+                {/* ASSESSMENT */}
                 <Link
                   href={`/assessment/${category}`}
                   style={{
                     color: "#00d9ff",
                     textDecoration: "none",
-                    padding: "12px 14px",
+                    padding: "9px 12px",
                     borderRadius: "12px",
                     border:
                       "1px solid rgba(0,217,255,0.3)",
-                    marginTop: "6px",
+                    marginTop: "4px",
                     fontWeight: "bold",
                     background:
                       "rgba(0,217,255,0.08)",
+                    fontSize: "14px",
                   }}
                 >
                   📝 Assessment
@@ -146,7 +153,8 @@ export default function HomePage() {
       <div
         style={{
           flex: 1,
-          padding: "60px",
+          padding: "20px",
+          minWidth: "300px",
         }}
       >
 
@@ -156,8 +164,8 @@ export default function HomePage() {
             margin: "0 auto",
             background: "#161b22",
             borderRadius: "24px",
-            padding: "50px",
-            lineHeight: "1.9",
+            padding: "35px",
+            lineHeight: "1.8",
             boxShadow:
               "0 0 30px rgba(0,0,0,0.4)",
           }}
@@ -165,7 +173,7 @@ export default function HomePage() {
 
           <h1
             style={{
-              fontSize: "48px",
+              fontSize: "36px",
               marginBottom: "20px",
             }}
           >
@@ -174,7 +182,7 @@ export default function HomePage() {
 
           <p
             style={{
-              fontSize: "20px",
+              fontSize: "16px",
               color: "#aaa",
               lineHeight: "1.8",
             }}

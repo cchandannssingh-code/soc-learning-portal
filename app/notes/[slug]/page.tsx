@@ -4,17 +4,26 @@ import Link from "next/link";
 
 function getNotes() {
 
-  const notesPath = path.join(process.cwd(), "notes");
+  const notesPath = path.join(
+    process.cwd(),
+    "notes"
+  );
 
-  const categories = fs.readdirSync(notesPath);
+  const categories =
+    fs.readdirSync(notesPath);
 
   return categories.map((category) => {
 
-    const categoryPath = path.join(notesPath, category);
+    const categoryPath = path.join(
+      notesPath,
+      category
+    );
 
     const files = fs
       .readdirSync(categoryPath)
-      .filter((file) => file.endsWith(".md"));
+      .filter((file) =>
+        file.endsWith(".md")
+      );
 
     return {
       category,
@@ -93,27 +102,29 @@ export default async function NotePage({
     <div
       style={{
         display: "flex",
+        flexWrap: "wrap",
         minHeight: "100vh",
         background: "#0f1117",
         color: "white",
       }}
     >
 
-      {/* LEFT SIDEBAR */}
+      {/* SIDEBAR */}
       <div
         style={{
-          width: "320px",
+          width: "100%",
+          maxWidth: "320px",
           borderRight: "1px solid #333",
-          padding: "24px",
-          overflowY: "auto",
+          padding: "20px",
           background: "#161b22",
+          overflowY: "auto",
         }}
       >
 
         <h1
           style={{
-            fontSize: "30px",
-            marginBottom: "40px",
+            fontSize: "24px",
+            marginBottom: "35px",
             textAlign: "center",
             fontWeight: "bold",
           }}
@@ -121,89 +132,128 @@ export default async function NotePage({
           SOC Portal
         </h1>
 
-        {notes.map((section) => (
+        {notes.map((section) => {
 
-          <div
-            key={section.category}
-            style={{
-              marginBottom: "35px",
-            }}
-          >
+          const hasFiles =
+            section.files.length > 0;
 
-            {/* CATEGORY */}
-            <h2
-              style={{
-                color: "#00d9ff",
-                marginBottom: "16px",
-                fontSize: "18px",
-                textTransform: "uppercase",
-              }}
-            >
-              ▼ {section.category}
-            </h2>
-
-            {/* SUBHEADINGS */}
+          return (
             <div
+              key={section.category}
               style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "10px",
-                paddingLeft: "12px",
+                marginBottom: "30px",
               }}
             >
 
-              {section.files.map((file) => {
+              {/* CATEGORY */}
+              <Link
+                href={
+                  hasFiles
+                    ? `/notes/${section.files[0].replace(".md", "")}`
+                    : "#"
+                }
+                style={{
+                  color: "#00d9ff",
+                  marginBottom: "14px",
+                  fontSize: "15px",
+                  textTransform: "uppercase",
+                  textDecoration: "none",
+                  display: "block",
+                  fontWeight: "bold",
+                }}
+              >
+                ▼ {section.category}
+              </Link>
 
-                const currentSlug =
-                  file.replace(".md", "");
+              {/* NOTES */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                  paddingLeft: "10px",
+                }}
+              >
 
-                const isActive =
-                  currentSlug === slug;
+                {hasFiles &&
+                  section.files.map((file) => {
 
-                return (
-                  <Link
-                    key={currentSlug}
-                    href={`/notes/${currentSlug}`}
-                    style={{
-                      color: isActive
-                        ? "#00d9ff"
-                        : "#ddd",
+                    const currentSlug =
+                      file.replace(".md", "");
 
-                      textDecoration: "none",
+                    const isActive =
+                      currentSlug === slug;
 
-                      padding: "12px 14px",
+                    return (
+                      <Link
+                        key={currentSlug}
+                        href={`/notes/${currentSlug}`}
+                        style={{
+                          color: isActive
+                            ? "#00d9ff"
+                            : "#ddd",
 
-                      borderRadius: "12px",
+                          textDecoration:
+                            "none",
 
-                      background: isActive
-                        ? "rgba(0,217,255,0.1)"
-                        : "transparent",
+                          padding: "9px 12px",
 
-                      transition: "0.3s",
-                    }}
-                  >
-                    ▶{" "}
-                    {currentSlug.replace(
-                      /-/g,
-                      " "
-                    )}
-                  </Link>
-                );
-              })}
+                          borderRadius:
+                            "12px",
+
+                          background: isActive
+                            ? "rgba(0,217,255,0.1)"
+                            : "transparent",
+
+                          transition: "0.3s",
+
+                          fontSize: "14px",
+                        }}
+                      >
+                        ▶{" "}
+                        {currentSlug.replace(
+                          /-/g,
+                          " "
+                        )}
+                      </Link>
+                    );
+                  })}
+
+                {/* ASSESSMENT */}
+                <Link
+                  href={`/assessment/${section.category}`}
+                  style={{
+                    color: "#00d9ff",
+                    textDecoration: "none",
+                    padding: "9px 12px",
+                    borderRadius: "12px",
+                    border:
+                      "1px solid rgba(0,217,255,0.3)",
+                    marginTop: "4px",
+                    fontWeight: "bold",
+                    background:
+                      "rgba(0,217,255,0.08)",
+                    fontSize: "14px",
+                  }}
+                >
+                  📝 Assessment
+                </Link>
+
+              </div>
 
             </div>
-
-          </div>
-        ))}
+          );
+        })}
 
       </div>
 
-      {/* RIGHT CONTENT */}
+      {/* CONTENT */}
       <div
         style={{
           flex: 1,
           overflowY: "auto",
-          padding: "60px",
+          padding: "20px",
+          minWidth: "300px",
         }}
       >
 
@@ -213,9 +263,9 @@ export default async function NotePage({
             margin: "0 auto",
             background: "#161b22",
             borderRadius: "24px",
-            padding: "50px",
-            lineHeight: "1.9",
-            fontSize: "18px",
+            padding: "35px",
+            lineHeight: "1.8",
+            fontSize: "16px",
             boxShadow:
               "0 0 30px rgba(0,0,0,0.4)",
           }}
