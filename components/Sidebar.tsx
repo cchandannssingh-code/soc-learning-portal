@@ -11,22 +11,36 @@ export default function Sidebar({
 }) {
   const pathname = usePathname()
 
-  const [openSections, setOpenSections] = useState<any>({
-    windows: true,
-  })
+  const [openSections, setOpenSections] =
+    useState<any>({})
+
+  const [openSubSections, setOpenSubSections] =
+    useState<any>({})
 
   const [mobileOpen, setMobileOpen] =
     useState(false)
 
-  const groupedNotes = notes.reduce((acc: any, note: any) => {
-    if (!acc[note.category]) {
-      acc[note.category] = []
-    }
+  const groupedNotes = notes.reduce(
+    (acc: any, note: any) => {
 
-    acc[note.category].push(note)
+      const category = note.category
+      const subcategory =
+        note.subcategory || "general"
 
-    return acc
-  }, {})
+      if (!acc[category]) {
+        acc[category] = {}
+      }
+
+      if (!acc[category][subcategory]) {
+        acc[category][subcategory] = []
+      }
+
+      acc[category][subcategory].push(note)
+
+      return acc
+    },
+    {}
+  )
 
   const toggleSection = (category: string) => {
     setOpenSections((prev: any) => ({
@@ -35,9 +49,23 @@ export default function Sidebar({
     }))
   }
 
+  const toggleSubSection = (
+    category: string,
+    subcategory: string
+  ) => {
+
+    const key =
+      `${category}-${subcategory}`
+
+    setOpenSubSections((prev: any) => ({
+      ...prev,
+      [key]: !prev[key],
+    }))
+  }
+
   return (
     <>
-      {/* MOBILE TOP BAR */}
+      {/* MOBILE HEADER */}
 
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#071224] border-b border-[#1e3354] px-4 py-3 flex items-center justify-between">
         <h1 className="text-white font-bold text-lg">
@@ -54,7 +82,7 @@ export default function Sidebar({
         </button>
       </div>
 
-      {/* MOBILE OVERLAY */}
+      {/* OVERLAY */}
 
       {mobileOpen && (
         <div
@@ -97,13 +125,17 @@ export default function Sidebar({
 
         <div className="space-y-4">
           {Object.entries(groupedNotes).map(
-            ([category, categoryNotes]: any) => (
+            ([category, subcategories]: any) => (
               <div
                 key={category}
                 className="bg-[#0d1b31] rounded-xl overflow-hidden border border-[#1e3354]"
               >
+                {/* CATEGORY */}
+
                 <button
-                  onClick={() => toggleSection(category)}
+                  onClick={() =>
+                    toggleSection(category)
+                  }
                   className={`
                     w-full flex items-center justify-between px-4 py-3
                     font-semibold uppercase tracking-wide transition
@@ -116,66 +148,125 @@ export default function Sidebar({
                 >
                   <span>{category}</span>
 
-                  <span className="text-sm">
+                  <span>
                     {openSections[category]
                       ? "▼"
                       : "▶"}
                   </span>
                 </button>
 
+                {/* SUBCATEGORY */}
+
                 <div
                   className={`
-                    overflow-hidden transition-all duration-300 ease-in-out
+                    overflow-hidden transition-all duration-300
                     ${
                       openSections[category]
-                        ? "max-h-[500px] opacity-100"
+                        ? "max-h-[2000px] opacity-100"
                         : "max-h-0 opacity-0"
                     }
                   `}
                 >
-                  <div className="p-3 space-y-2">
-                    {categoryNotes.map((note: any) => {
-                      const isActive =
-                        pathname === `/notes/${note.slug}`
+                  <div className="p-3 space-y-3">
 
-                      return (
-                        <Link
-                          key={note.slug}
-                          href={`/notes/${note.slug}`}
-                          onClick={() =>
-                            setMobileOpen(false)
-                          }
-                          className={`
-                            block px-3 py-2 rounded-lg text-sm transition
-                            ${
-                              isActive
-                                ? "bg-cyan-700 text-white"
-                                : "bg-[#162847] hover:bg-[#1c345d]"
-                            }
-                          `}
-                        >
-                          {note.title}
-                        </Link>
-                      )
-                    })}
+                    {Object.entries(subcategories).map(
+                      ([subcategory, subNotes]: any) => {
 
-                    <Link
-                      href={`/assessment/${category}`}
-                      onClick={() =>
-                        setMobileOpen(false)
+                        const subKey =
+                          `${category}-${subcategory}`
+
+                        return (
+                          <div
+                            key={subcategory}
+                            className="bg-[#132541] rounded-lg overflow-hidden"
+                          >
+                            {/* SUBCATEGORY BUTTON */}
+
+                            <button
+                              onClick={() =>
+                                toggleSubSection(
+                                  category,
+                                  subcategory
+                                )
+                              }
+                              className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-slate-200 hover:bg-[#1b3358] transition"
+                            >
+                              <span>
+                                {subcategory}
+                              </span>
+
+                              <span>
+                                {openSubSections[subKey]
+                                  ? "▼"
+                                  : "▶"}
+                              </span>
+                            </button>
+
+                            {/* NOTES */}
+
+                            <div
+                              className={`
+                                overflow-hidden transition-all duration-300
+                                ${
+                                  openSubSections[subKey]
+                                    ? "max-h-[1000px] opacity-100"
+                                    : "max-h-0 opacity-0"
+                                }
+                              `}
+                            >
+                              <div className="p-2 space-y-2">
+
+                                {subNotes.map(
+                                  (note: any) => {
+
+                                    const isActive =
+                                      pathname ===
+                                      `/notes/${note.slug}`
+
+                                    return (
+                                      <Link
+                                        key={note.slug}
+                                        href={`/notes/${note.slug}`}
+                                        onClick={() =>
+                                          setMobileOpen(false)
+                                        }
+                                        className={`
+                                          block px-3 py-2 rounded-lg text-sm transition
+                                          ${
+                                            isActive
+                                              ? "bg-cyan-700 text-white"
+                                              : "bg-[#1b3358] hover:bg-[#25406b]"
+                                          }
+                                        `}
+                                      >
+                                        {note.title}
+                                      </Link>
+                                    )
+                                  }
+                                )}
+
+                                <Link
+                                  href={`/assessment/${category}/${subcategory}`}
+                                  className={`
+                                    block px-3 py-2 rounded-lg text-sm font-medium transition
+                                    ${
+                                      pathname ===
+                                      `/assessment/${category}`
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-[#1b3358] hover:bg-[#25406b]"
+                                    }
+                                  `}
+                                >
+                                  Assessment
+                                </Link>
+
+                              </div>
+                            </div>
+                          </div>
+                        )
                       }
-                      className={`
-                        block px-3 py-2 rounded-lg text-sm font-medium transition
-                        ${
-                          pathname ===
-                          `/assessment/${category}`
-                            ? "bg-blue-600 text-white"
-                            : "bg-[#162847] hover:bg-[#1c345d]"
-                        }
-                      `}
-                    >
-                      Assessment
-                    </Link>
+                    )}
+
                   </div>
                 </div>
               </div>

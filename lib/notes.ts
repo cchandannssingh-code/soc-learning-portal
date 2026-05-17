@@ -2,90 +2,142 @@ import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
 
-const contentDirectory = path.join(process.cwd(), "notes")
+const notesDirectory = path.join(
+  process.cwd(),
+  "notes"
+)
 
-export function getAllNotes() {
-  const categories = fs.readdirSync(contentDirectory)
+function getAllFiles(
+  dirPath: string,
+  arrayOfFiles: string[] = []
+) {
 
-  let notes: any[] = []
+  const files = fs.readdirSync(dirPath)
 
-  categories.forEach((category) => {
-    const categoryPath = path.join(contentDirectory, category)
+  files.forEach((file) => {
 
-    const files = fs.readdirSync(categoryPath)
+    const fullPath = path.join(
+      dirPath,
+      file
+    )
 
-    files.forEach((file) => {
-      if (
-        !file.endsWith(".md") &&
-        !file.endsWith(".mdx")
-      ) {
-        return
-      }
+    if (
+      fs.statSync(fullPath).isDirectory()
+    ) {
 
-      const filePath = path.join(categoryPath, file)
-
-      const fileContent = fs.readFileSync(
-        filePath,
-        "utf8"
+      getAllFiles(
+        fullPath,
+        arrayOfFiles
       )
 
-      const { data } = matter(fileContent)
+    } else if (
+      file.endsWith(".md") ||
+      file.endsWith(".mdx")
+    ) {
 
-      notes.push({
-        slug: file
-          .replace(".md", "")
-          .replace(".mdx", ""),
-
-        category,
-
-        title:
-          data.title ||
-          file
-            .replace(".md", "")
-            .replace(".mdx", ""),
-      })
-    })
+      arrayOfFiles.push(fullPath)
+    }
   })
 
-  return notes
+  return arrayOfFiles
 }
 
-export function getNoteBySlug(slug: string) {
-  const categories = fs.readdirSync(contentDirectory)
+export function getAllNotes() {
 
-  for (const category of categories) {
-    const mdPath = path.join(
-      contentDirectory,
-      category,
-      `${slug}.md`
-    )
+  const files =
+    getAllFiles(notesDirectory)
 
-    const mdxPath = path.join(
-      contentDirectory,
-      category,
-      `${slug}.mdx`
-    )
+  return files.map((filePath) => {
 
-    const filePath = fs.existsSync(mdPath)
-      ? mdPath
-      : mdxPath
+    const fileContents =
+      fs.readFileSync(filePath, "utf8")
 
-    if (fs.existsSync(filePath)) {
-      const fileContent = fs.readFileSync(
-        filePath,
-        "utf8"
+    const {
+      data,
+      content,
+    } = matter(fileContents)
+
+    const relativePath =
+      path.relative(
+        notesDirectory,
+        filePath
       )
 
-      const { data, content } = matter(fileContent)
+    const slug = relativePath
+      .replace(/\\/g, "/")
+      .replace(/\.mdx?$/, "")
 
-      return {
-        slug,
-        category,
-        title: data.title || slug,
-        content,
-      }
+    const parts = slug.split("/")
+
+    return {
+
+      slug,
+
+      title:
+        data.title ||
+        parts[parts.length - 1],
+
+      category: parts[0],
+
+      subcategory:
+        parts.length > 2
+          ? parts[1]
+          : "general",
+
+      content,
     }
+  })
+}
+
+export function getNoteBySlug(
+  slug: string
+) {
+
+  const normalizedSlug =
+    slug.replace(/\//g, path.sep)
+
+  const mdPath = path.join(
+    notesDirectory,
+    `${normalizedSlug}.md`
+  )
+
+  const mdxPath = path.join(
+    notesDirectory,
+    `${normalizedSlug}.mdx`
+  )
+
+  let fullPath = ""
+
+  if (fs.existsSync(mdPath)) {
+
+    fullPath = mdPath
+
+  } else if (
+    fs.existsSync(mdxPath)
+  ) {
+
+    fullPath = mdxPath
+
+  } else {
+
+    return null
   }
 
-  return null
+  const fileContents =
+    fs.readFileSync(fullPath, "utf8")
+
+  const {
+    data,
+    content,
+  } = matter(fileContents)
+
+  return {
+
+    slug,
+
+    title:
+      data.title || slug,
+
+    content,
+  }
 }
