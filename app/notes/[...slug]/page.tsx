@@ -1,3 +1,4 @@
+import remarkGfm from "remark-gfm"
 import { getNoteBySlug } from "@/lib/notes"
 import ReactMarkdown from "react-markdown"
 import rehypeSlug from "rehype-slug"
@@ -32,6 +33,7 @@ export default async function NotePage({
       <div className="prose max-w-none">
 
         <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeSlug]}
         >
           {note.content}

@@ -3,22 +3,6 @@
 import { useState } from "react";
 
 const questions = [
-  {
-    question:
-      "Which account hash is required to create a Golden Ticket?",
-
-    options: [
-      "Administrator",
-      "KRBADMIN",
-      "krbtgt",
-      "CIFS",
-    ],
-
-    answer: 2,
-
-    explanation:
-      "Golden Tickets require the krbtgt hash to forge Kerberos TGTs.",
-  },
 
   {
     question:
@@ -28,13 +12,13 @@ const questions = [
       "TGS",
       "AS-REP",
       "TGT",
-      "NTLM Token",
+      "AP-REQ",
     ],
 
     answer: 2,
 
     explanation:
-      "Golden Ticket attacks forge fake TGTs for domain-wide access.",
+      "Golden Ticket attacks forge fake TGTs using the krbtgt hash.",
   },
 
   {
@@ -42,51 +26,664 @@ const questions = [
       "Which attack specifically abuses service account SPNs?",
 
     options: [
-      "Pass-the-Hash",
+      "Silver Ticket",
       "Kerberoasting",
+      "Pass-the-Ticket",
       "DCSync",
-      "Skeleton Key",
     ],
 
     answer: 1,
 
     explanation:
-      "Kerberoasting abuses SPNs to request crackable TGS tickets.",
+      "Kerberoasting abuses SPN-linked service tickets for offline cracking.",
   },
 
   {
     question:
-      "Which Event ID is most associated with Kerberos Service Ticket requests?",
+      "Which Event ID commonly logs Kerberos TGS requests?",
 
     options: [
-      "4624",
       "4768",
       "4769",
+      "4624",
       "4662",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Event ID 4769 records Kerberos service ticket requests.",
+  },
+
+  {
+    question:
+      "Which attack abuses replication privileges inside Active Directory?",
+
+    options: [
+      "Kerberoasting",
+      "Pass-the-Hash",
+      "DCSync",
+      "Silver Ticket",
     ],
 
     answer: 2,
 
     explanation:
-      "Event ID 4769 logs Kerberos TGS requests.",
+      "DCSync simulates a Domain Controller requesting replication data.",
   },
 
   {
     question:
-      "A forged TGS without contacting the Domain Controller most likely indicates:",
+      "Which attack is most associated with RC4 encrypted service tickets?",
+
+    options: [
+      "Golden Ticket",
+      "Kerberoasting",
+      "Pass-the-Hash",
+      "Silver Ticket",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Kerberoasting often targets RC4 encrypted TGS tickets for cracking.",
+  },
+
+  {
+    question:
+      "Which Windows process is the primary target for credential dumping?",
+
+    options: [
+      "winlogon.exe",
+      "explorer.exe",
+      "lsass.exe",
+      "services.exe",
+    ],
+
+    answer: 2,
+
+    explanation:
+      "LSASS stores authentication material and Kerberos tickets in memory.",
+  },
+
+  {
+    question:
+      "Which attack can bypass communication with the Domain Controller?",
+
+    options: [
+      "Golden Ticket",
+      "Silver Ticket",
+      "DCSync",
+      "AS-REP Roasting",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Silver Tickets forge service tickets locally without contacting the DC.",
+  },
+
+  {
+    question:
+      "Which attack requires Kerberos pre-authentication to be disabled?",
+
+    options: [
+      "Pass-the-Ticket",
+      "AS-REP Roasting",
+      "Golden Ticket",
+      "DCSync",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "AS-REP Roasting targets accounts without Kerberos pre-authentication.",
+  },
+
+  {
+    question:
+      "Which Event ID is most useful for suspicious process creation detection?",
+
+    options: [
+      "4688",
+      "4769",
+      "4624",
+      "4662",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "4688 records process creation events.",
+  },
+
+  {
+    question:
+      "Which attack directly abuses NTLM hashes for authentication?",
+
+    options: [
+      "Pass-the-Hash",
+      "Pass-the-Ticket",
+      "Golden Ticket",
+      "Kerberoasting",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Pass-the-Hash reuses NTLM hashes without cracking passwords.",
+  },
+
+  {
+    question:
+      "Which account hash is required for Golden Ticket generation?",
+
+    options: [
+      "Administrator",
+      "krbtgt",
+      "Domain Admin",
+      "CIFS",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "The krbtgt account signs Kerberos TGTs.",
+  },
+
+  {
+    question:
+      "Which Event ID is associated with Kerberos TGT requests?",
+
+    options: [
+      "4769",
+      "4768",
+      "4624",
+      "4672",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "4768 logs Kerberos Authentication Service requests.",
+  },
+
+  {
+    question:
+      "Which attack often results in many unique SPN requests from one user?",
+
+    options: [
+      "DCSync",
+      "Kerberoasting",
+      "Pass-the-Hash",
+      "Golden Ticket",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Kerberoasting often generates bursts of TGS requests for many SPNs.",
+  },
+
+  {
+    question:
+      "Which attack can impersonate any user in the domain?",
+
+    options: [
+      "Silver Ticket",
+      "Golden Ticket",
+      "AS-REP Roasting",
+      "Pass-the-Hash",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Golden Tickets allow arbitrary user impersonation across the domain.",
+  },
+
+  {
+    question:
+      "Which attack uses forged PAC data inside tickets?",
+
+    options: [
+      "Golden Ticket",
+      "Password Spraying",
+      "Kerberoasting",
+      "Pass-the-Ticket",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Golden Tickets forge PAC privilege information.",
+  },
+
+  {
+    question:
+      "Which attack commonly follows successful Kerberoasting?",
+
+    options: [
+      "Password reset",
+      "Silver Ticket",
+      "DNS tunneling",
+      "ARP spoofing",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Compromised service hashes may later enable Silver Ticket attacks.",
+  },
+
+  {
+    question:
+      "Which attack abuses legitimate Kerberos tickets instead of forging them?",
+
+    options: [
+      "Pass-the-Ticket",
+      "Golden Ticket",
+      "Silver Ticket",
+      "AS-REP Roasting",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Pass-the-Ticket reuses valid Kerberos tickets.",
+  },
+
+  {
+    question:
+      "Which attack is hardest to detect through DC logs alone?",
+
+    options: [
+      "Kerberoasting",
+      "Silver Ticket",
+      "DCSync",
+      "Golden Ticket",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Silver Tickets often avoid direct Domain Controller interaction.",
+  },
+
+  {
+    question:
+      "Which attack abuses Kerberos service ticket generation?",
+
+    options: [
+      "Golden Ticket",
+      "Kerberoasting",
+      "Pass-the-Hash",
+      "Password Spraying",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Kerberoasting abuses TGS ticket requests for service accounts.",
+  },
+
+  {
+    question:
+      "Which Event ID commonly appears during DCSync operations?",
+
+    options: [
+      "4662",
+      "4624",
+      "4769",
+      "4688",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "4662 logs directory replication-related activity.",
+  },
+
+  {
+    question:
+      "Which attack commonly abuses Mimikatz ticket injection?",
+
+    options: [
+      "Pass-the-Ticket",
+      "Kerberoasting",
+      "AS-REP Roasting",
+      "Password Spraying",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Mimikatz can inject Kerberos tickets into memory for Pass-the-Ticket attacks.",
+  },
+
+  {
+    question:
+      "Which attack most likely explains replication traffic from a workstation?",
+
+    options: [
+      "DCSync",
+      "Golden Ticket",
+      "Silver Ticket",
+      "Kerberoasting",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Replication traffic from non-DC systems strongly suggests DCSync.",
+  },
+
+  {
+    question:
+      "Which attack abuses stolen service account hashes?",
+
+    options: [
+      "Silver Ticket",
+      "Pass-the-Hash",
+      "Golden Ticket",
+      "AS-REP Roasting",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Silver Tickets require service account hashes to forge TGS tickets.",
+  },
+
+  {
+    question:
+      "Which detection clue most strongly indicates Kerberoasting?",
+
+    options: [
+      "Repeated DNS failures",
+      "Large number of unique TGS requests",
+      "Group policy changes",
+      "Large SMB transfers",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Kerberoasting often generates abnormal volumes of unique TGS requests.",
+  },
+
+  {
+    question:
+      "Which attack is considered domain-wide persistence?",
+
+    options: [
+      "Silver Ticket",
+      "Golden Ticket",
+      "Pass-the-Ticket",
+      "AS-REP Roasting",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Golden Tickets provide long-term domain persistence.",
+  },
+
+  {
+    question:
+      "Which attack typically uses offline password cracking techniques?",
+
+    options: [
+      "Pass-the-Ticket",
+      "Kerberoasting",
+      "Golden Ticket",
+      "DCSync",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "Kerberoasting extracts crackable service ticket hashes.",
+  },
+
+  {
+    question:
+      "Which attack abuses NTLM authentication rather than Kerberos?",
+
+    options: [
+      "Pass-the-Hash",
+      "Silver Ticket",
+      "Golden Ticket",
+      "Kerberoasting",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Pass-the-Hash abuses NTLM hashes directly.",
+  },
+
+  {
+    question:
+      "Which attack commonly results in 4769 events without 4768 events?",
 
     options: [
       "Golden Ticket",
       "AS-REP Roasting",
+      "Password Spraying",
+      "DNS Tunneling",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Golden Tickets may generate service activity without legitimate TGT requests.",
+  },
+
+  {
+    question:
+      "Which attack specifically abuses SPN-linked accounts?",
+
+    options: [
+      "Kerberoasting",
+      "Pass-the-Ticket",
+      "DCSync",
       "Silver Ticket",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "SPNs identify Kerberos-enabled service accounts.",
+  },
+
+  {
+    question:
+      "Which attack is most stealthy due to minimal logging?",
+
+    options: [
+      "Silver Ticket",
+      "Kerberoasting",
+      "DCSync",
+      "Golden Ticket",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Silver Tickets often avoid standard DC-side visibility.",
+  },
+
+  {
+    question:
+      "Which attack requires replication privileges?",
+
+    options: [
+      "Pass-the-Ticket",
+      "DCSync",
+      "Kerberoasting",
+      "AS-REP Roasting",
+    ],
+
+    answer: 1,
+
+    explanation:
+      "DCSync abuses directory replication permissions.",
+  },
+
+  {
+    question:
+      "Which attack can survive password resets if krbtgt is not rotated twice?",
+
+    options: [
+      "Golden Ticket",
+      "Silver Ticket",
+      "Pass-the-Hash",
+      "Kerberoasting",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Golden Ticket persistence survives until krbtgt is reset twice.",
+  },
+
+  {
+    question:
+      "Which attack abuses authentication material already stored in memory?",
+
+    options: [
+      "Pass-the-Ticket",
+      "Kerberoasting",
+      "Golden Ticket",
+      "AS-REP Roasting",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Pass-the-Ticket reuses cached Kerberos tickets.",
+  },
+
+  {
+    question:
+      "Which attack most commonly targets service accounts with weak passwords?",
+
+    options: [
+      "Kerberoasting",
+      "Pass-the-Hash",
+      "Golden Ticket",
       "DCSync",
     ],
 
-    answer: 2,
+    answer: 0,
 
     explanation:
-      "Silver Tickets bypass the DC by forging service tickets directly.",
+      "Weak service account passwords are prime Kerberoasting targets.",
   },
+
+  {
+    question:
+      "Which attack abuses the Kerberos PAC structure?",
+
+    options: [
+      "Golden Ticket",
+      "Pass-the-Hash",
+      "AS-REP Roasting",
+      "Password Spraying",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Golden Tickets manipulate PAC privilege data.",
+  },
+
+  {
+    question:
+      "Which attack often produces suspicious LSASS memory access?",
+
+    options: [
+      "Credential Dumping",
+      "Golden Ticket",
+      "Kerberoasting",
+      "Silver Ticket",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Credential dumping tools commonly target LSASS memory.",
+  },
+
+  {
+    question:
+      "Which attack can directly extract the krbtgt hash?",
+
+    options: [
+      "DCSync",
+      "Kerberoasting",
+      "Pass-the-Ticket",
+      "Silver Ticket",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "DCSync can replicate password hashes including krbtgt.",
+  },
+
+  {
+    question:
+      "Which attack abuses TGS tickets instead of TGT tickets?",
+
+    options: [
+      "Silver Ticket",
+      "Golden Ticket",
+      "Pass-the-Hash",
+      "AS-REP Roasting",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Silver Tickets forge service tickets rather than TGTs.",
+  },
+
+  {
+    question:
+      "Which attack is most associated with abnormal service ticket lifetimes?",
+
+    options: [
+      "Golden Ticket",
+      "Kerberoasting",
+      "DCSync",
+      "Pass-the-Hash",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Golden Tickets often contain abnormal expiration values.",
+  },
+
+  {
+    question:
+      "Which attack chain is most realistic in enterprise compromise?",
+
+    options: [
+      "Kerberoasting → DCSync → Golden Ticket",
+      "Password Spray → DNS → DHCP",
+      "Golden Ticket → Kerberoasting → SMB",
+      "Silver Ticket → ARP → DNS",
+    ],
+
+    answer: 0,
+
+    explanation:
+      "Kerberoasting may lead to privilege escalation, DCSync, and Golden Tickets.",
+  },
+
 ];
 
 export default function AssessmentPage() {
