@@ -686,6 +686,7 @@ const questions = [
 
 ];
 
+
 export default function AssessmentPage() {
 
   const [current, setCurrent] = useState(0);
@@ -898,7 +899,7 @@ export default function AssessmentPage() {
 
         {/* BUTTONS */}
 
-        <div className="mt-10 flex items-center justify-end gap-4 flex-wrap">
+        <div className="mt-10 mb-24 md:mb-10 flex items-center justify-end gap-4 flex-wrap">
 
           {current > 0 && (
 
