@@ -69,7 +69,7 @@ export default function Sidebar({
 
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#071224] border-b border-[#1e3354] px-4 py-3 flex items-center justify-between">
         <h1 className="text-white font-bold text-lg">
-          SOC Portal
+          🛡️ SOCForge
         </h1>
 
         <button
@@ -112,7 +112,7 @@ export default function Sidebar({
       >
         <div className="flex items-center justify-between mb-8 mt-10 md:mt-0">
           <h1 className="text-2xl font-bold tracking-wide">
-            SOC Portal
+            🛡️ SOCForge
           </h1>
 
           <button

@@ -18,7 +18,7 @@ export default function RootLayout({
           <main className="flex-1 bg-[#f4f7fb] min-h-screen p-4 md:p-8">
             {children}
             <footer className="mt-10 text-center text-sm text-slate-500 py-6">
-  © 2026 SOC Learning Portal. All rights reserved.
+  © 2026 SOCForge. All rights reserved.
 </footer>
           </main>
         </div>
