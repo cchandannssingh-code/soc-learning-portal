@@ -118,7 +118,7 @@ export default function QuizHomePage() {
                   </p>
 
                   <p className="text-gray-300">
-                    http://localhost:3000/quiz/{slug}?session={sessionName}&moderator=true
+                    https://soc-learning-portal-gjwx.vercel.app/quiz/{slug}?session={sessionName}&moderator=true
                   </p>
                 </div>
 
@@ -128,7 +128,7 @@ export default function QuizHomePage() {
                   </p>
 
                   <p className="text-gray-300">
-                    http://localhost:3000/quiz/{slug}?session={sessionName}
+                    https://soc-learning-portal-gjwx.vercel.app/quiz/{slug}?session={sessionName}
                   </p>
                 </div>
 
