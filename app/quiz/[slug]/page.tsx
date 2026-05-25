@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -11,8 +12,10 @@ import { useSearchParams } from "next/navigation";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -88,7 +91,7 @@ export default function QuizPage({
     useState(0);
 
   /* =========================
-     MODERATOR RESET
+     SESSION RESET
   ========================= */
 
   useEffect(() => {
@@ -162,7 +165,7 @@ export default function QuizPage({
   }, [sessionDocRef]);
 
   /* =========================
-     PARTICIPANTS LISTENER
+     PARTICIPANTS
   ========================= */
 
   useEffect(() => {
@@ -225,7 +228,8 @@ export default function QuizPage({
     if (
       !quizStarted ||
       !startTime ||
-      submitted
+      submitted ||
+      isModerator
     ) return;
 
     const timer = setInterval(() => {
@@ -261,6 +265,7 @@ export default function QuizPage({
     quizStarted,
     startTime,
     submitted,
+    isModerator,
   ]);
 
   /* =========================
@@ -277,6 +282,50 @@ export default function QuizPage({
       },
       { merge: true }
     );
+  };
+
+  /* =========================
+     DELETE SESSION
+  ========================= */
+
+  const deleteSession = async () => {
+
+    const confirmDelete = window.confirm(
+      "Delete this session and all related data?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+
+      const participantsSnapshot = await getDocs(
+        collection(db, participantsCollection)
+      );
+
+      for (const participant of participantsSnapshot.docs) {
+        await deleteDoc(participant.ref);
+      }
+
+      const leaderboardSnapshot = await getDocs(
+        collection(db, leaderboardCollection)
+      );
+
+      for (const item of leaderboardSnapshot.docs) {
+        await deleteDoc(item.ref);
+      }
+
+      await deleteDoc(sessionDocRef);
+
+      alert("Session deleted successfully");
+
+      window.location.reload();
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Failed to delete session");
+    }
   };
 
   /* =========================
@@ -395,12 +444,6 @@ export default function QuizPage({
             className="w-full p-4 rounded bg-zinc-800 border border-zinc-700 mb-4"
           />
 
-          {name.trim() === "" && (
-            <p className="text-red-400 text-sm mb-6">
-              Name is required
-            </p>
-          )}
-
           <button
             disabled={!name.trim()}
             onClick={joinSession}
@@ -416,10 +459,10 @@ export default function QuizPage({
   }
 
   /* =========================
-     WAITING ROOM
+     MODERATOR PANEL
   ========================= */
 
-  if (!quizStarted) {
+  if (!quizStarted || isModerator) {
 
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center p-8">
@@ -427,7 +470,7 @@ export default function QuizPage({
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-10 max-w-2xl w-full text-center">
 
           <h1 className="text-5xl font-bold mb-6">
-            Waiting Room
+            Moderator Control Room
           </h1>
 
           <p className="text-gray-400 text-xl mb-6">
@@ -461,18 +504,87 @@ export default function QuizPage({
 
           </div>
 
-          <p className="text-gray-300 mb-10 text-lg">
-            Waiting for moderator to start...
-          </p>
+          {quizStarted && (
+
+            <div className="bg-zinc-800 p-6 rounded-xl mb-8">
+
+              <p className="text-2xl font-bold mb-4">
+                Live Leaderboard
+              </p>
+
+              <div className="space-y-3">
+
+                {leaderboard.map((user, index) => {
+
+                  let rank = index + 1;
+
+                  if (
+                    index > 0 &&
+                    user.score ===
+                      leaderboard[index - 1].score
+                  ) {
+
+                    rank =
+                      leaderboard[index - 1].rank;
+                  }
+
+                  user.rank = rank;
+
+                  return (
+
+                    <div
+                      key={user.id}
+                      className="bg-zinc-700 p-4 rounded-lg flex justify-between items-center"
+                    >
+
+                      <div>
+
+                        <p className="font-bold">
+                          #{rank}
+                        </p>
+
+                        <p>{user.name}</p>
+
+                      </div>
+
+                      <div className="text-blue-400 text-2xl font-bold">
+                        {user.score}
+                      </div>
+
+                    </div>
+
+                  );
+                })}
+
+              </div>
+
+            </div>
+
+          )}
 
           {isModerator && (
 
-            <button
-              onClick={startQuiz}
-              className="bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-2xl font-bold"
-            >
-              Start Quiz
-            </button>
+            <div className="flex flex-col gap-4">
+
+              {!quizStarted && (
+
+                <button
+                  onClick={startQuiz}
+                  className="bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl text-2xl font-bold"
+                >
+                  Start Quiz
+                </button>
+
+              )}
+
+              <button
+                onClick={deleteSession}
+                className="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-xl text-xl font-bold"
+              >
+                Stop / Delete Session
+              </button>
+
+            </div>
 
           )}
 
@@ -490,7 +602,6 @@ export default function QuizPage({
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
 
-        {/* LEFT SIDE */}
         <div>
 
           <div className="bg-red-900 p-4 rounded-xl mb-6 text-center">
@@ -515,27 +626,10 @@ export default function QuizPage({
             {quizData.title}
           </h1>
 
-          <div className="bg-blue-900 border border-blue-700 p-4 rounded-xl mb-6">
-
-            <p className="text-sm text-gray-300">
-              Active Session
-            </p>
-
-            <h2 className="text-xl font-bold">
-              {sessionId}
-            </h2>
-
-          </div>
-
           <p className="text-gray-400 mb-6">
-
-            Question {currentQuestion + 1} of{" "}
-
-            {quizData.questions.length}
-
+            Question {currentQuestion + 1} of {quizData.questions.length}
           </p>
 
-          {/* QUESTION */}
           <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
 
             <h2 className="text-2xl font-semibold mb-6">
@@ -545,17 +639,13 @@ export default function QuizPage({
             <div className="space-y-4">
 
               {question.options.map(
-                (
-                  option: string,
-                  index: number
-                ) => {
+                (option: string, index: number) => {
 
                   const isCorrect =
                     option === question.answer;
 
                   const isSelected =
-                    answers[currentQuestion] ===
-                    option;
+                    answers[currentQuestion] === option;
 
                   let optionClass =
                     "bg-zinc-800 hover:bg-zinc-700";
@@ -563,13 +653,11 @@ export default function QuizPage({
                   if (submitted) {
 
                     if (isCorrect) {
-                      optionClass =
-                        "bg-green-700";
+                      optionClass = "bg-green-700";
                     }
 
                     else if (isSelected) {
-                      optionClass =
-                        "bg-red-700";
+                      optionClass = "bg-red-700";
                     }
                   }
 
@@ -585,8 +673,7 @@ export default function QuizPage({
                         name={`question-${currentQuestion}`}
                         value={option}
                         checked={
-                          answers[currentQuestion] ===
-                          option
+                          answers[currentQuestion] === option
                         }
                         onChange={() =>
                           handleOptionChange(
@@ -606,7 +693,6 @@ export default function QuizPage({
 
             </div>
 
-            {/* NAVIGATION */}
             <div className="flex justify-between mt-8">
 
               <button
@@ -653,33 +739,25 @@ export default function QuizPage({
 
           </div>
 
-          {/* SCORE */}
           {score !== null && (
 
             <div className="mt-8 bg-green-900 p-6 rounded-xl border border-green-700">
 
               <h2 className="text-3xl font-bold">
-
-                {name} scored {score}/
-                {quizData.questions.length}
-
+                {name} scored {score}/{quizData.questions.length}
               </h2>
 
             </div>
+
           )}
 
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 h-fit">
 
           <h2 className="text-3xl font-bold mb-2">
-            Top 10 Leaderboard
+            Leaderboard
           </h2>
-
-          <p className="text-gray-400 mb-6">
-            Participants: {leaderboard.length}
-          </p>
 
           <div className="space-y-4">
 
@@ -721,6 +799,7 @@ export default function QuizPage({
                   </div>
 
                 </div>
+
               );
             })}
 

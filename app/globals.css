@@ -172,4 +172,9 @@ body {
   .prose h3 {
     font-size: 18px;
   }
+  .no-select {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 }
