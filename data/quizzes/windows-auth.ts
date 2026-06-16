@@ -1,5 +1,6 @@
 const quiz = {
   title: "Windows Authentication & Security Events Quiz",
+   duration: 15, // minutes
 
   questions: [
     {

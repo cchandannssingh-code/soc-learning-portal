@@ -27,7 +27,7 @@ import { db } from "@/lib/firebase";
 
 import { quizzes } from "@/data/quizzes";
 
-const QUIZ_DURATION = 600;
+const QUIZ_DURATION = 900;
 
 export default function QuizPage({
   params,
