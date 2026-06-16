@@ -60,6 +60,7 @@ export default function QuizPage({
   const [participants, setParticipants] = useState<any[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [warning, setWarning] = useState("");
+  const [watermarkTime, setWatermarkTime] = useState("");
 
   // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -87,10 +88,10 @@ export default function QuizPage({
 
   const enterFullScreen = useCallback(async () => {
     const element = containerRef.current;
-    console.log('element onrender');
+    
     try {
       if (element && !document.fullscreenElement) {
-        console.log(element, 'dfgh')
+        
         await element.requestFullscreen();
       }
     } catch (err) {
@@ -101,7 +102,7 @@ export default function QuizPage({
   const exitFullScreen = useCallback(async () => {
     try {
       if (document.fullscreenElement) {
-        alert('page is in full screen....')
+        
         await document.exitFullscreen();
       }
     } catch (err) {
@@ -173,6 +174,13 @@ export default function QuizPage({
       element.removeEventListener("contextmenu", handleContextMenu);
     };
   }, [quizStarted, submitted, isModerator, joined, enterFullScreen, triggerWarning]);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setWatermarkTime(new Date().toLocaleTimeString());
+    }, 1000);
+    return () => clearInterval(t);
+  }, []);
 
   /* =========================
      SESSION RESET
@@ -277,8 +285,8 @@ export default function QuizPage({
 
     // Exit fullscreen when time is up / quiz submitted
     await exitFullScreen();
-    console.log('exit called..');
-    alert('exited')
+    
+    
 
     await addDoc(collection(db, leaderboardCollection), {
       name,
@@ -557,7 +565,31 @@ export default function QuizPage({
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <div
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%) rotate(-30deg)",
+          fontSize: "72px",
+          fontWeight: "bold",
+          color: "#ffffff",
+          opacity: 0.06,
+          pointerEvents: "none",
+          zIndex: 1,
+          textAlign: "center",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {name}
+        <br />
+        {sessionId}
+        <br />
+        {watermarkTime}
+      </div>
+
+<div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* LEFT: Quiz */}
         <div>
           {/* Timer */}
