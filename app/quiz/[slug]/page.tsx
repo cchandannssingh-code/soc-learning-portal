@@ -66,6 +66,10 @@ export default function QuizPage({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const warningTimerRef = useRef<NodeJS.Timeout | null>(null);
   const submittedRef = useRef(false); // mirror of submitted for use inside callbacks
+  const fullscreenViolationsRef = useRef(0);
+  const cameraViolationsRef = useRef(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   /* =========================
      WARNING TOAST
@@ -110,7 +114,20 @@ export default function QuizPage({
     }
   }, []);
 
-  /* =========================
+  
+  const startCamera = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch {
+      triggerWarning("❌ Camera permission is required.");
+    }
+  }, [triggerWarning]);
+
+/* =========================
      ANTI-CHEAT: FULLSCREEN + NO COPY/PASTE/RIGHT-CLICK
      Only active when quiz is running and not submitted
   ========================= */
@@ -124,13 +141,19 @@ export default function QuizPage({
 
     // Enter fullscreen when quiz starts
     enterFullScreen();
+    void startCamera();
 
     const handleFullscreenChange = () => {
-      // If timer has stopped (submitted or time ran out), allow exiting
       if (submittedRef.current) return;
       if (!document.fullscreenElement) {
-        triggerWarning("⚠️ Full screen is required! Returning to full screen...");
-        enterFullScreen();
+        fullscreenViolationsRef.current++;
+        if (fullscreenViolationsRef.current >= 3) {
+          triggerWarning("❌ Fullscreen violation 3/3. Quiz submitted.");
+          void calculateScore();
+          return;
+        }
+        triggerWarning(`⚠️ Fullscreen violation ${fullscreenViolationsRef.current}/3`);
+        setTimeout(() => { void enterFullScreen(); }, 500);
       }
     };
 
@@ -173,7 +196,7 @@ export default function QuizPage({
       window.removeEventListener("keydown", handleKeyDown);
       element.removeEventListener("contextmenu", handleContextMenu);
     };
-  }, [quizStarted, submitted, isModerator, joined, enterFullScreen, triggerWarning]);
+  }, [quizStarted, submitted, isModerator, joined, enterFullScreen, triggerWarning, startCamera]);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -294,6 +317,22 @@ export default function QuizPage({
       createdAt: new Date(),
     });
   }, [answers, name, leaderboardCollection, exitFullScreen, quizData]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const track = streamRef.current?.getVideoTracks()?.[0];
+      if (track && track.readyState !== "live" && !submittedRef.current) {
+        cameraViolationsRef.current++;
+        if (cameraViolationsRef.current >= 3) {
+          triggerWarning("❌ Camera violation 3/3. Quiz submitted.");
+          void calculateScore();
+          return;
+        }
+        triggerWarning(`⚠️ Camera violation ${cameraViolationsRef.current}/3`);
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [calculateScore, triggerWarning]);
 
   useEffect(() => {
     if (!quizStarted || !startTime || submitted || isModerator) return;
@@ -590,6 +629,10 @@ export default function QuizPage({
       </div>
 
 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="fixed top-4 right-4 z-50">
+          <video ref={videoRef} autoPlay muted playsInline className="w-40 rounded-lg border border-zinc-700 bg-black" />
+        </div>
+
         {/* LEFT: Quiz */}
         <div>
           {/* Timer */}
