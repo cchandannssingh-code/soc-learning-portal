@@ -1,81 +1,35 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useState } from "react";
+import SidebarTree from "./SidebarTree";
+import { TreeItem } from "@/lib/notes";
+import { useAuth } from "./AuthProvider";
 
-export default function Sidebar({
-  notes,
-}: {
-  notes: any[]
-}) {
-  const pathname = usePathname()
+export default function Sidebar({ tree }: { tree: TreeItem[] }) {
+  const { logout } = useAuth();
+  const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const [openSections, setOpenSections] =
-    useState<any>({})
-
-  const [openSubSections, setOpenSubSections] =
-    useState<any>({})
-
-  const [mobileOpen, setMobileOpen] =
-    useState(false)
-
-  const groupedNotes = notes.reduce(
-    (acc: any, note: any) => {
-
-      const category = note.category
-      const subcategory =
-        note.subcategory || "general"
-
-      if (!acc[category]) {
-        acc[category] = {}
-      }
-
-      if (!acc[category][subcategory]) {
-        acc[category][subcategory] = []
-      }
-
-      acc[category][subcategory].push(note)
-
-      return acc
-    },
-    {}
-  )
-
-  const toggleSection = (category: string) => {
-    setOpenSections((prev: any) => ({
+  const toggleFolder = (path: string) => {
+    setOpenFolders((prev) => ({
       ...prev,
-      [category]: !prev[category],
-    }))
-  }
+      [path]: !prev[path],
+    }));
+  };
 
-  const toggleSubSection = (
-    category: string,
-    subcategory: string
-  ) => {
-
-    const key =
-      `${category}-${subcategory}`
-
-    setOpenSubSections((prev: any) => ({
-      ...prev,
-      [key]: !prev[key],
-    }))
-  }
+  const handleLogout = async () => {
+    logout();
+    await fetch("/api/logout", { method: "POST" });
+    window.location.href = "/";
+  };
 
   return (
     <>
       {/* MOBILE HEADER */}
-
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#071224] border-b border-[#1e3354] px-4 py-3 flex items-center justify-between">
-        <h1 className="text-white font-bold text-lg">
-          🛡️ SOCForge
-        </h1>
-
+        <h1 className="text-white font-bold text-lg">🛡️ SOCForge</h1>
         <button
-          onClick={() =>
-            setMobileOpen(!mobileOpen)
-          }
+          onClick={() => setMobileOpen(!mobileOpen)}
           className="text-white text-xl"
         >
           ☰
@@ -83,7 +37,6 @@ export default function Sidebar({
       </div>
 
       {/* OVERLAY */}
-
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
@@ -92,7 +45,6 @@ export default function Sidebar({
       )}
 
       {/* SIDEBAR */}
-
       <div
         className={`
           fixed md:sticky top-0 left-0 z-50
@@ -100,21 +52,12 @@ export default function Sidebar({
           text-white p-5 overflow-y-auto
           transition-transform duration-300
           border-r border-[#1e3354]
-
-          ${
-            mobileOpen
-              ? "translate-x-0"
-              : "-translate-x-full"
-          }
-
+          ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
         `}
       >
         <div className="flex items-center justify-between mb-8 mt-10 md:mt-0">
-          <h1 className="text-2xl font-bold tracking-wide">
-            🛡️ SOCForge
-          </h1>
-
+          <h1 className="text-2xl font-bold tracking-wide">🛡️ SOCForge</h1>
           <button
             onClick={() => setMobileOpen(false)}
             className="md:hidden text-xl"
@@ -124,156 +67,20 @@ export default function Sidebar({
         </div>
 
         <div className="space-y-4">
-          {Object.entries(groupedNotes).map(
-            ([category, subcategories]: any) => (
-              <div
-                key={category}
-                className="bg-[#0d1b31] rounded-xl overflow-hidden border border-[#1e3354]"
-              >
-                {/* CATEGORY */}
-
-                <button
-                  onClick={() =>
-                    toggleSection(category)
-                  }
-                  className={`
-                    w-full flex items-center justify-between px-4 py-3
-                    font-semibold uppercase tracking-wide transition
-                    ${
-                      openSections[category]
-                        ? "bg-[#132541] text-cyan-300"
-                        : "text-blue-300 hover:bg-[#132541]"
-                    }
-                  `}
-                >
-                  <span>{category}</span>
-
-                  <span>
-                    {openSections[category]
-                      ? "▼"
-                      : "▶"}
-                  </span>
-                </button>
-
-                {/* SUBCATEGORY */}
-
-                <div
-                  className={`
-                    overflow-hidden transition-all duration-300
-                    ${
-                      openSections[category]
-                        ? "max-h-[2000px] opacity-100"
-                        : "max-h-0 opacity-0"
-                    }
-                  `}
-                >
-                  <div className="p-3 space-y-3">
-
-                    {Object.entries(subcategories).map(
-                      ([subcategory, subNotes]: any) => {
-
-                        const subKey =
-                          `${category}-${subcategory}`
-
-                        return (
-                          <div
-                            key={subcategory}
-                            className="bg-[#132541] rounded-lg overflow-hidden"
-                          >
-                            {/* SUBCATEGORY BUTTON */}
-
-                            <button
-                              onClick={() =>
-                                toggleSubSection(
-                                  category,
-                                  subcategory
-                                )
-                              }
-                              className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-slate-200 hover:bg-[#1b3358] transition"
-                            >
-                              <span>
-                                {subcategory}
-                              </span>
-
-                              <span>
-                                {openSubSections[subKey]
-                                  ? "▼"
-                                  : "▶"}
-                              </span>
-                            </button>
-
-                            {/* NOTES */}
-
-                            <div
-                              className={`
-                                overflow-hidden transition-all duration-300
-                                ${
-                                  openSubSections[subKey]
-                                    ? "max-h-[1000px] opacity-100"
-                                    : "max-h-0 opacity-0"
-                                }
-                              `}
-                            >
-                              <div className="p-2 space-y-2">
-
-                                {subNotes.map(
-                                  (note: any) => {
-
-                                    const isActive =
-                                      pathname ===
-                                      `/notes/${note.slug}`
-
-                                    return (
-                                      <Link
-                                        key={note.slug}
-                                        href={`/notes/${note.slug}`}
-                                        onClick={() =>
-                                          setMobileOpen(false)
-                                        }
-                                        className={`
-                                          block px-3 py-2 rounded-lg text-sm transition
-                                          ${
-                                            isActive
-                                              ? "bg-cyan-700 text-white"
-                                              : "bg-[#1b3358] hover:bg-[#25406b]"
-                                          }
-                                        `}
-                                      >
-                                        {note.title}
-                                      </Link>
-                                    )
-                                  }
-                                )}
-
-                                <Link
-                                  href={`/assessment/${category}/${subcategory}`}
-                                  className={`
-                                    block px-3 py-2 rounded-lg text-sm font-medium transition
-                                    ${
-                                      pathname ===
-                                      `/assessment/${category}`
-                                        ? "bg-blue-600 text-white"
-                                        : "bg-[#1b3358] hover:bg-[#25406b]"
-                                    }
-                                  `}
-                                >
-                                  Assessment
-                                </Link>
-
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      }
-                    )}
-
-                  </div>
-                </div>
-              </div>
-            )
-          )}
+          <SidebarTree
+            items={tree}
+            openFolders={openFolders}
+            toggleFolder={toggleFolder}
+            setMobileOpen={setMobileOpen}
+          />
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-600 hover:bg-red-500 text-white py-2 px-3 rounded-lg transition text-sm font-medium"
+          >
+            Logout
+          </button>
         </div>
       </div>
     </>
-  )
+  );
 }

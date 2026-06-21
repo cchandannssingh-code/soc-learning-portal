@@ -2,39 +2,33 @@
 
 import { useState } from "react";
 
-const questions = [
+// Default questions (you can expand this later)
+const defaultQuestions = [
   {
-    question: "What does Event ID 4648 represent?",
+    question: "What is this assessment about?",
     options: [
-      "Failed logon",
-      "Explicit credential usage",
-      "Service installation",
-      "Kerberos ticket deletion",
+      "Windows security",
+      "Kerberos",
+      "This folder's content",
+      "Nothing",
     ],
-    answer: 1,
-    explanation: "Event ID 4648 is generated when explicit credentials are supplied.",
-  },
-  {
-    question: "Which process commonly triggers Event ID 4648?",
-    options: ["notepad.exe", "calc.exe", "runas.exe", "mspaint.exe"],
     answer: 2,
-    explanation: "runas.exe commonly uses alternate credentials.",
-  },
-  {
-    question: "Which Windows component handles authentication?",
-    options: ["explorer.exe", "lsass.exe", "chrome.exe", "taskmgr.exe"],
-    answer: 1,
-    explanation: "LSASS handles authentication and security token creation.",
+    explanation: "This assessment is for this specific folder's content.",
   },
 ];
 
-export default function WindowsAssessment() {
+export default function DynamicAssessmentPage({ params }: { params: Promise<{ slug: string[] }> }) {
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState(false);
 
+  const resolvedParams = params;
+  const slugArray = resolvedParams.slug;
+  const folderName = slugArray.length > 0 ? slugArray[slugArray.length - 1] : "Assessment";
+
+  const questions = defaultQuestions; // You can customize questions per folder later
   const q = questions[current];
 
   function handleSubmit() {
@@ -89,7 +83,7 @@ export default function WindowsAssessment() {
       <div className="bg-white border border-slate-200 rounded-2xl p-8 md:p-10 shadow-sm">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-slate-900 mb-2">
-            Windows Assessment
+            {folderName} Assessment
           </h1>
           <p className="text-slate-500">
             Question {current + 1} of {questions.length}

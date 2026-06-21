@@ -2,39 +2,31 @@ import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
 
-const notesDirectory = path.join(
-  process.cwd(),
-  "notes"
-)
+const notesDirectory = path.join(process.cwd(), "notes")
 
-function getAllFiles(
-  dirPath: string,
-  arrayOfFiles: string[] = []
-) {
+export interface Note {
+  slug: string
+  title: string
+  content: string
+}
 
+export interface TreeItem {
+  name: string
+  path: string
+  type: "folder" | "file"
+  children?: TreeItem[]
+  note?: Note
+}
+
+function getAllFiles(dirPath: string, arrayOfFiles: string[] = []): string[] {
   const files = fs.readdirSync(dirPath)
 
   files.forEach((file) => {
+    const fullPath = path.join(dirPath, file)
 
-    const fullPath = path.join(
-      dirPath,
-      file
-    )
-
-    if (
-      fs.statSync(fullPath).isDirectory()
-    ) {
-
-      getAllFiles(
-        fullPath,
-        arrayOfFiles
-      )
-
-    } else if (
-      file.endsWith(".md") ||
-      file.endsWith(".mdx")
-    ) {
-
+    if (fs.statSync(fullPath).isDirectory()) {
+      getAllFiles(fullPath, arrayOfFiles)
+    } else if (file.endsWith(".md") || file.endsWith(".mdx")) {
       arrayOfFiles.push(fullPath)
     }
   })
@@ -42,102 +34,98 @@ function getAllFiles(
   return arrayOfFiles
 }
 
-export function getAllNotes() {
-
-  const files =
-    getAllFiles(notesDirectory)
+export function getAllNotes(): Note[] {
+  const files = getAllFiles(notesDirectory)
 
   return files.map((filePath) => {
-
-    const fileContents =
-      fs.readFileSync(filePath, "utf8")
-
-    const {
-      data,
-      content,
-    } = matter(fileContents)
-
-    const relativePath =
-      path.relative(
-        notesDirectory,
-        filePath
-      )
-
-    const slug = relativePath
-      .replace(/\\/g, "/")
-      .replace(/\.mdx?$/, "")
-
+    const fileContents = fs.readFileSync(filePath, "utf8")
+    const { data, content } = matter(fileContents)
+    const relativePath = path.relative(notesDirectory, filePath)
+    const slug = relativePath.replace(/\\/g, "/").replace(/\.mdx?$/, "")
     const parts = slug.split("/")
 
     return {
-
       slug,
-
-      title:
-        data.title ||
-        parts[parts.length - 1],
-
-      category: parts[0],
-
-      subcategory:
-        parts.length > 2
-          ? parts[1]
-          : "general",
-
+      title: data.title || parts[parts.length - 1],
       content,
     }
   })
 }
 
-export function getNoteBySlug(
-  slug: string
-) {
-
-  const normalizedSlug =
-    slug.replace(/\//g, path.sep)
-
-  const mdPath = path.join(
-    notesDirectory,
-    `${normalizedSlug}.md`
-  )
-
-  const mdxPath = path.join(
-    notesDirectory,
-    `${normalizedSlug}.mdx`
-  )
+export function getNoteBySlug(slug: string): Note | null {
+  const normalizedSlug = slug.replace(/\//g, path.sep)
+  const mdPath = path.join(notesDirectory, `${normalizedSlug}.md`)
+  const mdxPath = path.join(notesDirectory, `${normalizedSlug}.mdx`)
 
   let fullPath = ""
 
   if (fs.existsSync(mdPath)) {
-
     fullPath = mdPath
-
-  } else if (
-    fs.existsSync(mdxPath)
-  ) {
-
+  } else if (fs.existsSync(mdxPath)) {
     fullPath = mdxPath
-
   } else {
-
     return null
   }
 
-  const fileContents =
-    fs.readFileSync(fullPath, "utf8")
-
-  const {
-    data,
-    content,
-  } = matter(fileContents)
+  const fileContents = fs.readFileSync(fullPath, "utf8")
+  const { data, content } = matter(fileContents)
 
   return {
-
     slug,
-
-    title:
-      data.title || slug,
-
+    title: data.title || slug,
     content,
   }
+}
+
+function buildTree(dirPath: string, basePath: string = ""): TreeItem[] {
+  const items: TreeItem[] = []
+  const files = fs.readdirSync(dirPath)
+
+  files.forEach((file) => {
+    const fullPath = path.join(dirPath, file)
+    const relativePath = path.relative(notesDirectory, fullPath)
+    const normalizedPath = relativePath.replace(/\\/g, "/")
+
+    if (fs.statSync(fullPath).isDirectory()) {
+      const children = buildTree(fullPath, normalizedPath)
+      items.push({
+        name: file,
+        path: normalizedPath,
+        type: "folder",
+        children: children.length > 0 ? children : undefined,
+      })
+    } else if (file.endsWith(".md") || file.endsWith(".mdx")) {
+      const fileContents = fs.readFileSync(fullPath, "utf8")
+      const { data, content } = matter(fileContents)
+      const slug = normalizedPath.replace(/\.mdx?$/, "")
+      const parts = slug.split("/")
+
+      items.push({
+        name: file.replace(/\.mdx?$/, ""),
+        path: normalizedPath,
+        type: "file",
+        note: {
+          slug,
+          title: data.title || parts[parts.length - 1],
+          content,
+        },
+      })
+    }
+  })
+
+  items.sort((a, b) => {
+    if (a.type === "folder" && b.type === "file") {
+      return -1
+    }
+    if (a.type === "file" && b.type === "folder") {
+      return 1
+    }
+    return a.name.localeCompare(b.name)
+  })
+
+  return items
+}
+
+export function getNotesTree(): TreeItem[] {
+  return buildTree(notesDirectory)
 }

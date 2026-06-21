@@ -3,32 +3,22 @@
 import { useState } from "react";
 
 const questions = [
+  
+  
   {
-    question: "What does Event ID 4648 represent?",
-    options: [
-      "Failed logon",
-      "Explicit credential usage",
-      "Service installation",
-      "Kerberos ticket deletion",
-    ],
-    answer: 1,
-    explanation: "Event ID 4648 is generated when explicit credentials are supplied.",
-  },
-  {
-    question: "Which process commonly triggers Event ID 4648?",
-    options: ["notepad.exe", "calc.exe", "runas.exe", "mspaint.exe"],
-    answer: 2,
-    explanation: "runas.exe commonly uses alternate credentials.",
-  },
-  {
-    question: "Which Windows component handles authentication?",
-    options: ["explorer.exe", "lsass.exe", "chrome.exe", "taskmgr.exe"],
-    answer: 1,
-    explanation: "LSASS handles authentication and security token creation.",
-  },
+  question: "What does Event ID 4720 indicate?",
+  options: [
+    "User account created",
+    "User account deleted",
+    "Password reset",
+    "Successful logon"
+  ],
+  answer: 0,
+  explanation: "Event ID 4720 is generated when a new user account is created."
+}
 ];
 
-export default function WindowsAssessment() {
+export default function USBDeviceMonitoring() {
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -89,7 +79,7 @@ export default function WindowsAssessment() {
       <div className="bg-white border border-slate-200 rounded-2xl p-8 md:p-10 shadow-sm">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-slate-900 mb-2">
-            Windows Assessment
+            USB Device Monitoring
           </h1>
           <p className="text-slate-500">
             Question {current + 1} of {questions.length}

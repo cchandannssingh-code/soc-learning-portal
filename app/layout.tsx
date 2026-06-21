@@ -1,29 +1,35 @@
-import "./globals.css"
-import Sidebar from "@/components/Sidebar"
-import { getAllNotes } from "@/lib/notes"
+import "./globals.css";
+import Sidebar from "@/components/Sidebar";
+import SearchBar from "@/components/SearchBar";
+import { AuthProvider } from "@/components/AuthProvider";
+import { getNotesTree, getAllNotes } from "@/lib/notes";
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const notes = getAllNotes()
+  const tree = getNotesTree();
+  const allNotes = getAllNotes();
 
   return (
     <html lang="en">
       <body>
-        <div className="flex flex-col md:flex-row">
-          <Sidebar notes={notes} />
-
-          <main className="flex-1 bg-[#f4f7fb] min-h-screen p-4 md:p-8">
-            {children}
-            <footer className="mt-10 text-center text-sm text-slate-500 py-6">
-  © 2026 SOCForge. All rights reserved.
-</footer>
-          </main>
-        </div>
+        <AuthProvider>
+          <div className="flex flex-col min-h-screen">
+            <SearchBar notes={allNotes} />
+            <div className="flex flex-col md:flex-row flex-1">
+              <Sidebar tree={tree} />
+              <main className="flex-1 bg-[#f4f7fb] p-4 md:p-8">
+                {children}
+                <footer className="mt-10 text-center text-sm text-slate-500 py-6">
+                  © 2026 SOCForge. All rights reserved.
+                </footer>
+              </main>
+            </div>
+          </div>
+        </AuthProvider>
       </body>
     </html>
-  )
-  
+  );
 }
