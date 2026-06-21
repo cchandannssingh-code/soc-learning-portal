@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 
 // Default questions (you can expand this later)
 const defaultQuestions = [
@@ -24,7 +24,7 @@ export default function DynamicAssessmentPage({ params }: { params: Promise<{ sl
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState(false);
 
-  const resolvedParams = params;
+  const resolvedParams = use(params);
   const slugArray = resolvedParams.slug;
   const folderName = slugArray.length > 0 ? slugArray[slugArray.length - 1] : "Assessment";
 
