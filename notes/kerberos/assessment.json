@@ -1,0 +1,35 @@
+[
+  {
+    "question": "What is Kerberoasting?",
+    "options": [
+      "A way to roast coffee beans",
+      "An attack that targets Kerberos service tickets",
+      "A Windows update feature",
+      "A type of firewall rule"
+    ],
+    "answer": 1,
+    "explanation": "Kerberoasting is an attack that targets Kerberos service tickets to crack password hashes of service accounts."
+  },
+  {
+    "question": "What is a Golden Ticket?",
+    "options": [
+      "A ticket to a theme park",
+      "A forged Kerberos TGT that grants unlimited access",
+      "A type of cookie",
+      "A Windows license key"
+    ],
+    "answer": 1,
+    "explanation": "A Golden Ticket is a forged Kerberos Ticket Granting Ticket (TGT) that gives an attacker unlimited access to a domain."
+  },
+  {
+    "question": "What does AS-REP Roasting target?",
+    "options": [
+      "Users with pre-authentication disabled",
+      "Administrator accounts only",
+      "Computer accounts",
+      "Service tickets"
+    ],
+    "answer": 0,
+    "explanation": "AS-REP Roasting targets user accounts that have Kerberos pre-authentication disabled, allowing attackers to request AS-REP messages and crack them offline."
+  }
+]

@@ -10,12 +10,20 @@ export interface Note {
   content: string
 }
 
+export interface AssessmentQuestion {
+  question: string
+  options: string[]
+  answer: number
+  explanation: string
+}
+
 export interface TreeItem {
   name: string
   path: string
   type: "folder" | "file"
   children?: TreeItem[]
   note?: Note
+  assessment?: AssessmentQuestion[]
 }
 
 function getAllFiles(dirPath: string, arrayOfFiles: string[] = []): string[] {
@@ -87,12 +95,25 @@ function buildTree(dirPath: string, basePath: string = ""): TreeItem[] {
     const normalizedPath = relativePath.replace(/\\/g, "/")
 
     if (fs.statSync(fullPath).isDirectory()) {
+      // Check for assessment.json in THIS folder
+      let assessmentQuestions: AssessmentQuestion[] | undefined
+      const assessmentPath = path.join(fullPath, "assessment.json")
+      if (fs.existsSync(assessmentPath) && fs.statSync(assessmentPath).isFile()) {
+        try {
+          const assessmentContent = fs.readFileSync(assessmentPath, "utf8")
+          assessmentQuestions = JSON.parse(assessmentContent)
+        } catch (e) {
+          console.error(`Error parsing assessment.json in ${fullPath}:`, e)
+        }
+      }
+      
       const children = buildTree(fullPath, normalizedPath)
       items.push({
         name: file,
         path: normalizedPath,
         type: "folder",
         children: children.length > 0 ? children : undefined,
+        assessment: assessmentQuestions,
       })
     } else if (file.endsWith(".md") || file.endsWith(".mdx")) {
       const fileContents = fs.readFileSync(fullPath, "utf8")
@@ -128,4 +149,50 @@ function buildTree(dirPath: string, basePath: string = ""): TreeItem[] {
 
 export function getNotesTree(): TreeItem[] {
   return buildTree(notesDirectory)
+}
+
+export function getAssessmentByPath(folderPath: string): AssessmentQuestion[] | undefined {
+  // Function to find the correct case-insensitive path
+  function findExactPath(currentDir: string, remainingParts: string[]): string | null {
+    if (remainingParts.length === 0) {
+      return currentDir
+    }
+
+    const targetPart = remainingParts[0].toLowerCase()
+    const entries = fs.readdirSync(currentDir)
+
+    for (const entry of entries) {
+      if (entry.toLowerCase() === targetPart) {
+        const fullEntryPath = path.join(currentDir, entry)
+        if (fs.statSync(fullEntryPath).isDirectory()) {
+          const result = findExactPath(fullEntryPath, remainingParts.slice(1))
+          if (result) {
+            return result
+          }
+        }
+      }
+    }
+    return null
+  }
+
+  const pathParts = folderPath.split("/").filter(Boolean)
+  const exactFolderPath = findExactPath(notesDirectory, pathParts)
+  
+  if (!exactFolderPath) {
+    return undefined
+  }
+  
+  const assessmentPath = path.join(exactFolderPath, "assessment.json")
+  
+  if (!fs.existsSync(assessmentPath) || !fs.statSync(assessmentPath).isFile()) {
+    return undefined
+  }
+  
+  try {
+    const assessmentContent = fs.readFileSync(assessmentPath, "utf8")
+    return JSON.parse(assessmentContent)
+  } catch (e) {
+    console.error(`Error loading assessment.json for path ${folderPath}:`, e)
+    return undefined
+  }
 }

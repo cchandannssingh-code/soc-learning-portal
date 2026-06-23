@@ -1,16 +1,16 @@
-import "./globals.css";
-import Sidebar from "@/components/Sidebar";
-import SearchBar from "@/components/SearchBar";
-import { AuthProvider } from "@/components/AuthProvider";
-import { getNotesTree, getAllNotes } from "@/lib/notes";
+import "./globals.css"
+import Sidebar from "@/components/Sidebar"
+import SearchBar from "@/components/SearchBar"
+import { AuthProvider } from "@/components/AuthProvider"
+import { getNotesTree, getAllNotes } from "@/lib/notes"
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const tree = getNotesTree();
-  const allNotes = getAllNotes();
+  const tree = getNotesTree()
+  const allNotes = getAllNotes()
 
   return (
     <html lang="en">
@@ -31,5 +31,5 @@ export default function RootLayout({
         </AuthProvider>
       </body>
     </html>
-  );
+  )
 }
