@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Online Users - allow read/write for presence tracking
+    match /online_users/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null || 
+        (request.resource.data.userId is string && 
+         request.resource.data.userId == userId);
+    }
+
+    // Community Messages - allow read for all, create for authenticated or any user
+    match /community_messages/{messageId} {
+      allow read: if true;
+      allow create: if request.resource.data.userId is string &&
+        request.resource.data.userName is string &&
+        request.resource.data.message is string &&
+        request.resource.data.message.size() <= 500;
+    }
+
+    // Announcements - read-only for users
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow write: if false; // Admin-only (enable with Firebase Auth in future)
+    }
+  }
+}

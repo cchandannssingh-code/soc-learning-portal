@@ -3,6 +3,7 @@ import Sidebar from "@/components/Sidebar"
 import SearchBar from "@/components/SearchBar"
 import { AuthProvider } from "@/components/AuthProvider"
 import { getNotesTree, getAllNotes } from "@/lib/notes"
+import CommunicationHub from "@/components/communication/CommunicationHub"
 
 export default function RootLayout({
   children,
@@ -28,6 +29,7 @@ export default function RootLayout({
               </main>
             </div>
           </div>
+          <CommunicationHub />
         </AuthProvider>
       </body>
     </html>
