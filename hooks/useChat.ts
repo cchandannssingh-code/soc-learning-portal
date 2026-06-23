@@ -11,16 +11,20 @@ export function useChat(userId: string, userName: string) {
 
   useEffect(() => {
     const unsubscribe = subscribeToMessages((newMessages) => {
+      const previousCount = messages.length
       setMessages(newMessages)
-      if (!isActive && newMessages.length > 0) {
-        setUnreadCount((prev) => prev + 1)
+      
+      // Only increment unread if there are new messages and chat is not active
+      if (!isActive && newMessages.length > previousCount) {
+        const newMessageCount = newMessages.length - previousCount
+        setUnreadCount((prev) => prev + newMessageCount)
       }
     })
 
     return () => {
       unsubscribe()
     }
-  }, [isActive])
+  }, [isActive, messages.length])
 
   useEffect(() => {
     if (isActive) {

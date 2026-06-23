@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, ReactNode } from "react"
+import { useState, useEffect, useCallback, ReactNode } from "react"
 import { TabType } from "@/types/communication"
 import FloatingButton from "./FloatingButton"
 import ChatTab from "./ChatTab"
@@ -21,11 +21,17 @@ export default function CommunicationHub({ userId: propUserId, userName: propUse
   const [userId, setUserId] = useState("")
   const [userName, setUserName] = useState("")
   const [isClient, setIsClient] = useState(false)
+  const [totalUnreadCount, setTotalUnreadCount] = useState(0)
 
   useEffect(() => {
     setIsClient(true)
     setUserId(getUserId())
     setUserName(getUserName())
+  }, [])
+
+  // Aggregate unread counts from child components
+  const handleUnreadCountChange = useCallback((count: number) => {
+    setTotalUnreadCount(count)
   }, [])
 
   const handleUserNameUpdate = (newName: string) => {
@@ -93,7 +99,7 @@ export default function CommunicationHub({ userId: propUserId, userName: propUse
   return (
     <>
       <FloatingButton
-        unreadCount={0}
+        unreadCount={totalUnreadCount}
         onClick={handleToggle}
         isExpanded={isExpanded}
       />
@@ -158,7 +164,13 @@ export default function CommunicationHub({ userId: propUserId, userName: propUse
 
           {/* Content */}
           <div className="flex-1 overflow-hidden">
-            {activeTab === "chat" && userId && <ChatTab userId={userId} userName={userName} />}
+            {activeTab === "chat" && userId && (
+              <ChatTab 
+                userId={userId} 
+                userName={userName} 
+                onUnreadCountChange={handleUnreadCountChange}
+              />
+            )}
             {activeTab === "online" && userId && (
               <OnlineUsersTab 
                 userId={userId} 
@@ -174,6 +186,7 @@ export default function CommunicationHub({ userId: propUserId, userName: propUse
               <DirectMessagesTab 
                 userId={userId} 
                 userName={userName}
+                onUnreadCountChange={handleUnreadCountChange}
               />
             )}
           </div>

@@ -4,6 +4,7 @@ import {
   doc, 
   setDoc, 
   getDoc, 
+  getDocs,
   addDoc,
   onSnapshot, 
   serverTimestamp,
@@ -151,6 +152,7 @@ export function subscribeToMessages(
 
 /**
  * Mark messages in a conversation as read by a user
+ * Updates the readBy array on each unread message
  */
 export async function markConversationAsRead(
   conversationId: string,
@@ -158,19 +160,21 @@ export async function markConversationAsRead(
 ): Promise<void> {
   const messagesRef = collection(db, CONVERSATIONS_COLLECTION, conversationId, MESSAGES_COLLECTION)
   
-  // Get all unread messages in this conversation
-  const q = query(
-    messagesRef,
-    where("readBy", "not-in", [[userId]])
-  )
-
-  // Note: Firestore doesn't support "not-in" with array-contains
-  // We'll use a different approach - update all messages not read by this user
-  // For simplicity, we'll mark the conversation as read by updating a field
-  const conversationRef = doc(collection(db, CONVERSATIONS_COLLECTION), conversationId)
-  await updateDoc(conversationRef, {
-    [`readBy_${userId}`]: serverTimestamp(),
-  })
+  // Get all messages in the conversation
+  const q = query(messagesRef)
+  const snapshot = await getDocs(q)
+  
+  // Update each unread message to include this user in readBy
+  const updatePromises = snapshot.docs
+    .filter(messageDoc => !messageDoc.data().readBy?.includes(userId))
+    .map(messageDoc => {
+      const messageRef = messageDoc.ref
+      return updateDoc(messageRef, {
+        readBy: arrayUnion(userId)
+      })
+    })
+  
+  await Promise.all(updatePromises)
 }
 
 /**

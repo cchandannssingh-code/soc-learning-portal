@@ -7,14 +7,16 @@ import { useDirectMessages } from "@/hooks/useDirectMessages"
 interface DirectMessagesTabProps {
   userId: string
   userName: string
+  onUnreadCountChange?: (count: number) => void
 }
 
-export default function DirectMessagesTab({ userId, userName }: DirectMessagesTabProps) {
+export default function DirectMessagesTab({ userId, userName, onUnreadCountChange }: DirectMessagesTabProps) {
   const {
     conversations,
     activeConversationId,
     messages,
     unreadCounts,
+    totalUnreadCount,
     isLoading,
     startConversation,
     sendMessage,
@@ -23,6 +25,11 @@ export default function DirectMessagesTab({ userId, userName }: DirectMessagesTa
     getOtherParticipant,
     getTotalUnreadCount,
   } = useDirectMessages(userId, userName)
+
+  // Notify parent of unread count changes
+  useEffect(() => {
+    onUnreadCountChange?.(totalUnreadCount)
+  }, [totalUnreadCount, onUnreadCountChange])
 
   const [input, setInput] = useState("")
   const messagesEndRef = useRef<HTMLDivElement>(null)

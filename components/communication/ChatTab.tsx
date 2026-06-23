@@ -7,12 +7,18 @@ import { useChat } from "@/hooks/useChat"
 interface ChatTabProps {
   userId: string
   userName: string
+  onUnreadCountChange?: (count: number) => void
 }
 
-export default function ChatTab({ userId, userName }: ChatTabProps) {
-  const { messages, sendMessage, isActive, markAsRead } = useChat(userId, userName)
+export default function ChatTab({ userId, userName, onUnreadCountChange }: ChatTabProps) {
+  const { messages, sendMessage, isActive, markAsRead, unreadCount } = useChat(userId, userName)
   const [input, setInput] = useState("")
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Notify parent of unread count changes
+  useEffect(() => {
+    onUnreadCountChange?.(unreadCount)
+  }, [unreadCount, onUnreadCountChange])
 
   useEffect(() => {
     markAsRead()

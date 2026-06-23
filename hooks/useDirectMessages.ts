@@ -56,6 +56,9 @@ export function useDirectMessages(userId: string, userName: string) {
     }
   }, [activeConversationId, userId])
 
+  // Calculate total unread count across all conversations
+  const totalUnreadCount = Object.values(unreadCounts).reduce((sum, count) => sum + count, 0)
+
   // Mark conversation as read when opened
   useEffect(() => {
     if (!activeConversationId || !userId) return
@@ -135,14 +138,15 @@ export function useDirectMessages(userId: string, userName: string) {
   )
 
   const getTotalUnreadCount = useCallback(() => {
-    return Object.values(unreadCounts).reduce((sum, count) => sum + count, 0)
-  }, [unreadCounts])
+    return totalUnreadCount
+  }, [totalUnreadCount])
 
   return {
     conversations,
     activeConversationId,
     messages,
     unreadCounts,
+    totalUnreadCount,
     isLoading,
     startConversation,
     sendMessage,
