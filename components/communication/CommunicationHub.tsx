@@ -6,6 +6,8 @@ import FloatingButton from "./FloatingButton"
 import ChatTab from "./ChatTab"
 import OnlineUsersTab from "./OnlineUsersTab"
 import AnnouncementsTab from "./AnnouncementsTab"
+import ProfileTab from "./ProfileTab"
+import DirectMessagesTab from "./DirectMessagesTab"
 import { getUserId, getUserName } from "@/lib/user"
 
 interface CommunicationHubProps {
@@ -25,6 +27,16 @@ export default function CommunicationHub({ userId: propUserId, userName: propUse
     setUserId(getUserId())
     setUserName(getUserName())
   }, [])
+
+  const handleUserNameUpdate = (newName: string) => {
+    setUserName(newName)
+  }
+
+  const handleStartConversation = (otherUserId: string, otherUserName: string) => {
+    setActiveTab("direct")
+    // Store the target user to start conversation with
+    ;(window as any).__dmTargetUser = { userId: otherUserId, userName: otherUserName }
+  }
 
   const handleToggle = () => {
     setIsExpanded((prev) => !prev)
@@ -55,6 +67,24 @@ export default function CommunicationHub({ userId: propUserId, userName: propUse
       icon: (
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+        </svg>
+      ),
+    },
+    {
+      id: "profile",
+      label: "Profile",
+      icon: (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      ),
+    },
+    {
+      id: "direct",
+      label: "Messages",
+      icon: (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ),
     },
@@ -129,8 +159,23 @@ export default function CommunicationHub({ userId: propUserId, userName: propUse
           {/* Content */}
           <div className="flex-1 overflow-hidden">
             {activeTab === "chat" && userId && <ChatTab userId={userId} userName={userName} />}
-            {activeTab === "online" && userId && <OnlineUsersTab userId={userId} userName={userName} />}
+            {activeTab === "online" && userId && (
+              <OnlineUsersTab 
+                userId={userId} 
+                userName={userName} 
+                onStartConversation={handleStartConversation}
+              />
+            )}
             {activeTab === "announcements" && <AnnouncementsTab />}
+            {activeTab === "profile" && userId && (
+              <ProfileTab userId={userId} onUserNameUpdate={handleUserNameUpdate} />
+            )}
+            {activeTab === "direct" && userId && (
+              <DirectMessagesTab 
+                userId={userId} 
+                userName={userName}
+              />
+            )}
           </div>
         </div>
       )}

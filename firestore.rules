@@ -18,6 +18,41 @@ service cloud.firestore {
         request.resource.data.message.size() <= 500;
     }
 
+    // User Profiles - allow users to read all, write only their own
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.resource.data.userId is string &&
+                   request.resource.data.userId == userId &&
+                   request.resource.data.displayName is string &&
+                   request.resource.data.displayName.size() <= 25;
+    }
+
+    // Direct Conversations - allow users to read/write conversations they participate in
+    match /direct_conversations/{conversationId} {
+      allow read: if request.auth != null ||
+        (request.resource.data.participants is list &&
+         userId in request.resource.data.participants);
+      allow create: if request.auth != null ||
+        (request.resource.data.participants is list &&
+         request.resource.data.participants.size() == 2 &&
+         userId in request.resource.data.participants);
+      allow update: if request.auth != null ||
+        (request.resource.data.participants is list &&
+         userId in request.resource.data.participants);
+    }
+
+    // Direct Messages - allow users to read/write messages in conversations they participate in
+    match /direct_conversations/{conversationId}/messages/{messageId} {
+      allow read: if request.auth != null ||
+        (exists(/databases/$(database)/documents/direct_conversations/$(conversationId)) &&
+         userId in get(/databases/$(database)/documents/direct_conversations/$(conversationId)).data.participants);
+      allow create: if request.auth != null ||
+        (request.resource.data.senderId == userId &&
+         request.resource.data.message is string &&
+         request.resource.data.message.size() <= 500 &&
+         exists(/databases/$(database)/documents/direct_conversations/$(conversationId)));
+    }
+
     // Announcements - read-only for users
     match /announcements/{announcementId} {
       allow read: if true;

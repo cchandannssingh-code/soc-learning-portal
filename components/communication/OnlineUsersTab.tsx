@@ -6,9 +6,10 @@ import { usePresence } from "@/hooks/usePresence"
 interface OnlineUsersTabProps {
   userId: string
   userName: string
+  onStartConversation?: (userId: string, userName: string) => void
 }
 
-export default function OnlineUsersTab({ userId, userName }: OnlineUsersTabProps) {
+export default function OnlineUsersTab({ userId, userName, onStartConversation }: OnlineUsersTabProps) {
   const { onlineUsers, onlineCount } = usePresence(userId, userName)
 
   return (
@@ -55,6 +56,28 @@ export default function OnlineUsersTab({ userId, userName }: OnlineUsersTabProps
                   </p>
                   <p className="text-xs text-slate-500">Online</p>
                 </div>
+
+                {/* Message Button */}
+                {user.userId !== userId && onStartConversation && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onStartConversation(user.userId, user.userName)
+                    }}
+                    className="
+                      flex-shrink-0 p-2
+                      bg-indigo-600 hover:bg-indigo-700
+                      text-white rounded-lg
+                      transition-colors
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+                    "
+                    aria-label={`Message ${user.userName}`}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </button>
+                )}
               </div>
             ))}
           </div>

@@ -13,7 +13,7 @@ export function getUserId(): string {
 }
 
 export function getUserName(): string {
-  if (typeof window === "undefined") return "Server"
+  if (typeof window === "undefined") return ""
 
   let userName = localStorage.getItem(USER_NAME_KEY)
   if (!userName) {

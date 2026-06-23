@@ -20,6 +20,16 @@ export function usePresence(userId: string, userName: string) {
     }
   }, [])
 
+  // Update presence when userName changes
+  useEffect(() => {
+    if (!userId || !userName) return
+
+    // Update presence with new name
+    setOnline(userId, userName).catch((err) => {
+      console.error("Failed to update presence with new name:", err)
+    })
+  }, [userName, userId])
+
   useEffect(() => {
     if (!userId || !userName) return
 
@@ -56,7 +66,6 @@ export function usePresence(userId: string, userName: string) {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
       clearInterval(heartbeatInterval)
-      setOffline(userId)
     }
   }, [userId, userName])
 
