@@ -73,6 +73,14 @@ export default function DirectMessagesTab({ userId, userName, onUnreadCountChang
   // If there's an active conversation, show the chat view
   if (activeConversationId) {
     const activeConversation = conversations.find((c) => c.id === activeConversationId)
+    
+    // Defensive validation: Verify user is a participant
+    if (!activeConversation?.participants?.includes(userId)) {
+      console.error("UI: User not in conversation, returning to list")
+      goBackToList()
+      return null
+    }
+    
     const otherUser = activeConversation ? getOtherParticipant(activeConversation) : null
 
     return (

@@ -22,7 +22,12 @@ export function useDirectMessages(userId: string, userName: string) {
     if (!userId) return
 
     const unsubscribe = subscribeToConversations(userId, (conversationsList: DirectConversation[]) => {
-      setConversations(conversationsList)
+      // Defensive validation: Filter to only conversations where user is a participant
+      const validConversations = conversationsList.filter((conv) => {
+        return conv.participants && conv.participants.includes(userId)
+      })
+      
+      setConversations(validConversations)
     })
 
     return () => {
@@ -114,8 +119,21 @@ export function useDirectMessages(userId: string, userName: string) {
   )
 
   const selectConversation = useCallback((conversationId: string) => {
+    // Defensive validation: Verify user is a participant before opening
+    const conversation = conversations.find((c) => c.id === conversationId)
+    
+    if (!conversation) {
+      console.error("Conversation not found:", conversationId)
+      return
+    }
+    
+    if (!conversation.participants?.includes(userId)) {
+      console.error("User is not a participant in this conversation:", conversationId)
+      return
+    }
+    
     setActiveConversationId(conversationId)
-  }, [])
+  }, [conversations, userId])
 
   const goBackToList = useCallback(() => {
     setActiveConversationId(null)

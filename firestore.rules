@@ -54,27 +54,31 @@ service cloud.firestore {
 
     // Direct Conversations - allow read/write for participants only
     match /direct_conversations/{conversationId} {
-      allow read: if request.resource.data.participants is list &&
-                   request.resource.data.participants.size() == 2 &&
-                   request.resource.data.participants.hasAny([userId]);
+      // Read: Only participants can read the conversation
+      // FIXED: Use resource.data (existing document) instead of request.resource.data (incoming write)
+      allow read: if resource.data.participants is list &&
+                   resource.data.participants.size() == 2 &&
+                   resource.data.participants.hasAny([userId]);
       
       allow create: if request.resource.data.participants is list &&
                     request.resource.data.participants.size() == 2 &&
                     request.resource.data.participants.hasAny([userId]) &&
                     request.resource.data.participantNames is map;
       
-      allow update: if request.resource.data.participants is list &&
-                    request.resource.data.participants.hasAny([userId]);
+      allow update: if resource.data.participants is list &&
+                    resource.data.participants.hasAny([userId]);
       
-      allow delete: if request.resource.data.participants is list &&
-                    request.resource.data.participants.hasAny([userId]);
+      allow delete: if resource.data.participants is list &&
+                    resource.data.participants.hasAny([userId]);
 
       // Direct Messages subcollection
       match /messages/{messageId} {
-        allow read: if request.resource.data.senderId is string &&
-                     request.resource.data.readBy is list &&
-                     (request.resource.data.senderId == userId ||
-                      request.resource.data.readBy.hasAny([userId]));
+        // Read: Only sender or users in readBy array can read
+        // FIXED: Use resource.data (existing document) instead of request.resource.data (incoming write)
+        allow read: if resource.data.senderId is string &&
+                     resource.data.readBy is list &&
+                     (resource.data.senderId == userId ||
+                      resource.data.readBy.hasAny([userId]));
         
         allow create: if request.resource.data.senderId is string &&
                       request.resource.data.senderId.size() > 0 &&
@@ -90,12 +94,13 @@ service cloud.firestore {
                       get(/databases/$(database)/documents/direct_conversations/$(conversationId)).data.participants is list &&
                       get(/databases/$(database)/documents/direct_conversations/$(conversationId)).data.participants.hasAny([userId]);
         
-        allow update: if request.resource.data.senderId is string &&
-                      request.resource.data.readBy is list &&
-                      (request.resource.data.senderId == userId ||
-                       request.resource.data.readBy.hasAny([userId]));
+        // Update: Only sender or users in readBy can update (for marking as read)
+        allow update: if resource.data.senderId is string &&
+                      resource.data.readBy is list &&
+                      (resource.data.senderId == userId ||
+                       resource.data.readBy.hasAny([userId]));
         
-        allow delete: if request.resource.data.senderId == userId;
+        allow delete: if resource.data.senderId == userId;
       }
     }
 
