@@ -4,6 +4,7 @@ import SearchBar from "@/components/SearchBar"
 import { AuthProvider } from "@/components/AuthProvider"
 import { getNotesTree, getAllNotes } from "@/lib/notes"
 import CommunicationHub from "@/components/communication/CommunicationHub"
+import GlobalCallUI from "@/components/communication/GlobalCallUI"
 
 export default function RootLayout({
   children,
@@ -30,6 +31,7 @@ export default function RootLayout({
             </div>
           </div>
           <CommunicationHub />
+          <GlobalCallUI />
         </AuthProvider>
       </body>
     </html>

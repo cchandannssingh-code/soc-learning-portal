@@ -1,0 +1,27 @@
+{
+  "name": "socforge-functions",
+  "version": "1.0.0",
+  "description": "Firebase Cloud Functions for SOCForge",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log",
+    "serve": "npm run build && firebase emulators:start --only functions"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "firebase-admin": "^11.11.1",
+    "firebase-functions": "^4.9.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.0.1",
+    "typescript": "^5.9.3"
+  },
+  "private": true
+}

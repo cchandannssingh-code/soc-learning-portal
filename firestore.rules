@@ -3,7 +3,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Helper function to validate userId matches path
     // Since we don't have Firebase Auth yet, we validate that the userId in data matches the path
-    function isValidUserId(pathUserId: string, dataUserId: string): bool {
+    function isValidUserId(pathUserId, dataUserId) {
       return pathUserId == dataUserId;
     }
 
@@ -16,7 +16,15 @@ service cloud.firestore {
                     request.resource.data.userName.size() <= 50 &&
                     request.resource.data.status in ["online", "offline"];
       
-      allow update: if isValidUserId(userId, request.resource.data.userId);
+      allow update: if isValidUserId(userId, request.resource.data.userId) &&
+                    // Only allow updating specific fields to prevent malicious changes
+                    request.resource.data.size() <= resource.data.size() + 2 &&
+                    // Validate status if provided
+                    (!request.resource.data.status is string || 
+                     request.resource.data.status in ["online", "offline"]) &&
+                    // Validate userName if provided
+                    (!request.resource.data.userName is string ||
+                     request.resource.data.userName.size() <= 50);
       
       allow delete: if isValidUserId(userId, userId);
     }
@@ -108,6 +116,44 @@ service cloud.firestore {
     match /announcements/{announcementId} {
       allow read: if true;
       allow write: if false; // Admin-only (enable with Firebase Auth in future)
+    }
+
+    // Voice Calls - allow read/write for participants only
+    match /voice_calls/{callId} {
+      // Read: Only participants can read the call
+      allow read: if resource.data.participants is list &&
+                   resource.data.participants.hasAny([userId]);
+      
+      allow create: if request.resource.data.participants is list &&
+                     request.resource.data.participants.size() == 2 &&
+                     request.resource.data.participants.hasAny([userId]) &&
+                     request.resource.data.participantNames is map &&
+                     request.resource.data.initiatorId is string &&
+                     request.resource.data.status in ["ringing", "connecting", "active", "ended", "failed", "rejected", "cancelled", "timeout"];
+      
+      allow update: if resource.data.participants is list &&
+                     resource.data.participants.hasAny([userId]);
+      
+      allow delete: if resource.data.participants is list &&
+                     resource.data.participants.hasAny([userId]);
+
+      // Call Events subcollection
+      match /events/{eventId} {
+        // Read: Only participants of the parent call can read events
+        allow read: if exists(/databases/$(database)/documents/voice_calls/$(callId)) &&
+                     get(/databases/$(database)/documents/voice_calls/$(callId)).data.participants is list &&
+                     get(/databases/$(database)/documents/voice_calls/$(callId)).data.participants.hasAny([userId]);
+        
+        // Create: Only participants can create events, and userId must match
+        allow create: if request.resource.data.userId == userId &&
+                       request.resource.data.type in ["offer", "answer", "ice-candidate", "end-call"] &&
+                       exists(/databases/$(database)/documents/voice_calls/$(callId)) &&
+                       get(/databases/$(database)/documents/voice_calls/$(callId)).data.participants is list &&
+                       get(/databases/$(database)/documents/voice_calls/$(callId)).data.participants.hasAny([userId]);
+        
+        allow update: if false;
+        allow delete: if false;
+      }
     }
   }
 }

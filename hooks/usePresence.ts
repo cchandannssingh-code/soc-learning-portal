@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { OnlineUser } from "@/types/communication"
-import { setOnline, setOffline, subscribeToOnlineUsers } from "@/lib/communication/presence"
+import { setOnline, setOffline, updateLastSeen, subscribeToOnlineUsers } from "@/lib/communication/presence"
 
 export function usePresence(userId: string, userName: string) {
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([])
@@ -20,16 +20,6 @@ export function usePresence(userId: string, userName: string) {
     }
   }, [])
 
-  // Update presence when userName changes
-  useEffect(() => {
-    if (!userId || !userName) return
-
-    // Update presence with new name
-    setOnline(userId, userName).catch((err) => {
-      console.error("Failed to update presence with new name:", err)
-    })
-  }, [userName, userId])
-
   useEffect(() => {
     if (!userId || !userName) return
 
@@ -46,10 +36,10 @@ export function usePresence(userId: string, userName: string) {
 
     updatePresence()
 
-    // Heartbeat: update presence every 30 seconds
+    // Heartbeat: update lastSeen every 30 seconds (lightweight update)
     const heartbeatInterval = setInterval(async () => {
       try {
-        await setOnline(userId, userName)
+        await updateLastSeen(userId)
         setError(null)
       } catch (err) {
         console.error("Heartbeat failed:", err)
@@ -57,14 +47,32 @@ export function usePresence(userId: string, userName: string) {
       }
     }, 30000)
 
+    // Listen for browser online/offline events
+    const handleOnline = () => {
+      console.log("Network restored")
+      setError(null)
+    }
+
+    const handleOffline = () => {
+      console.log("Network lost")
+      setError("You are currently offline")
+    }
+
+    // Best-effort cleanup on browser close
     const handleBeforeUnload = () => {
-      setOffline(userId)
+      setOffline(userId).catch(() => {
+        // Silently fail - server will clean up stale users
+      })
     }
 
     window.addEventListener("beforeunload", handleBeforeUnload)
+    window.addEventListener("online", handleOnline)
+    window.addEventListener("offline", handleOffline)
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload)
+      window.removeEventListener("online", handleOnline)
+      window.removeEventListener("offline", handleOffline)
       clearInterval(heartbeatInterval)
     }
   }, [userId, userName])

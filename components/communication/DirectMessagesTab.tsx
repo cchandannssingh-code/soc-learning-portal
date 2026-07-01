@@ -8,9 +8,10 @@ interface DirectMessagesTabProps {
   userId: string
   userName: string
   onUnreadCountChange?: (count: number) => void
+  onInitiateCall?: (userId: string, userName: string) => void
 }
 
-export default function DirectMessagesTab({ userId, userName, onUnreadCountChange }: DirectMessagesTabProps) {
+export default function DirectMessagesTab({ userId, userName, onUnreadCountChange, onInitiateCall }: DirectMessagesTabProps) {
   const {
     conversations,
     activeConversationId,
@@ -102,6 +103,29 @@ export default function DirectMessagesTab({ userId, userName, onUnreadCountChang
             </h3>
           </div>
         </div>
+
+        {/* Call Button */}
+        {onInitiateCall && otherUser && (
+          <div className="px-4 pb-3 pt-3">
+            <button
+              onClick={() => onInitiateCall(otherUser.userId, otherUser.userName)}
+              className="
+                w-full flex items-center justify-center gap-2
+                bg-green-500 hover:bg-green-600
+                text-white rounded-xl
+                py-2.5 px-4
+                transition-all duration-200
+                focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2
+              "
+              aria-label={`Call ${otherUser.userName}`}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <span className="font-medium">Voice Call</span>
+            </button>
+          </div>
+        )}
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">

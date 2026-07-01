@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase"
-import { collection, doc, setDoc, onSnapshot, serverTimestamp, query, where } from "firebase/firestore"
+import { collection, doc, setDoc, updateDoc, onSnapshot, serverTimestamp, query, where } from "firebase/firestore"
 import { OnlineUser } from "@/types/communication"
 
 const COLLECTION = "online_users"
@@ -11,17 +11,24 @@ export async function setOnline(userId: string, userName: string): Promise<void>
     userName,
     status: "online",
     lastSeen: serverTimestamp(),
-  })
+  }, { merge: true })
+}
+
+export async function updateLastSeen(userId: string): Promise<void> {
+  const userRef = doc(collection(db, COLLECTION), userId)
+  await setDoc(userRef, {
+    lastSeen: serverTimestamp(),
+  }, { merge: true })
 }
 
 export async function setOffline(userId: string): Promise<void> {
   const userRef = doc(collection(db, COLLECTION), userId)
   await setDoc(userRef, {
     userId,
-    userName: "",
+    userName: "",  // Clear userName for privacy when offline
     status: "offline",
     lastSeen: serverTimestamp(),
-  })
+  }, { merge: true })
 }
 
 export function subscribeToOnlineUsers(

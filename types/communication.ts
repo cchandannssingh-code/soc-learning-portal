@@ -50,10 +50,33 @@ export interface DirectMessage {
   readBy: string[]
 }
 
-export type TabType = "chat" | "online" | "announcements" | "profile" | "direct"
+export type TabType = "chat" | "online" | "announcements" | "profile" | "direct" | "calls"
 
 export interface CommunicationHubState {
   isExpanded: boolean
   activeTab: TabType
   unreadCount: number
+}
+
+export type CallStatus = "idle" | "ringing" | "connecting" | "connected" | "ended" | "failed" | "busy" | "rejected" | "cancelled" | "timeout" | "permission_denied"
+
+export interface VoiceCall {
+  id?: string
+  callId: string
+  participants: string[]
+  participantNames: Record<string, string>
+  status: CallStatus
+  initiatorId: string
+  startedAt: Date
+  endedAt?: Date
+  offer?: RTCSessionDescriptionInit
+  answer?: RTCSessionDescriptionInit
+}
+
+export interface CallEvent {
+  id?: string
+  type: "offer" | "answer" | "ice-candidate" | "end-call"
+  userId: string
+  data: any
+  timestamp: Date
 }
