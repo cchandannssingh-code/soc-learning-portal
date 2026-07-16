@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { VoiceCall } from "@/types/communication"
 
 interface VoiceCallUIProps {
@@ -22,6 +22,48 @@ export default function VoiceCallUI({
 }: VoiceCallUIProps) {
   const otherUserId = call.participants.find((p) => p !== call.initiatorId) || call.initiatorId
   const otherUserName = call.participantNames[otherUserId] || "Unknown User"
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  
+  // Track component lifecycle
+  useEffect(() => {
+    console.log("[VoiceCallUI] Component MOUNTED", {
+      callId: call.callId,
+      callStatus: call.status,
+      hasRemoteStream: !!remoteStream,
+      remoteStreamId: (remoteStream as MediaStream | null)?.id || "null",
+    })
+    
+    return () => {
+      console.log("[VoiceCallUI] Component UNMOUNTED", {
+        callId: call.callId,
+        callStatus: call.status,
+        hasRemoteStream: !!remoteStream,
+        remoteStreamId: (remoteStream as MediaStream | null)?.id || "null",
+      })
+    }
+  }, [call.callId, call.status, remoteStream])
+  
+  // Track renders with full props
+  useEffect(() => {
+    const getStreamId = (srcObject: any): string => {
+      if (srcObject && typeof srcObject.id === 'string') {
+        return srcObject.id
+      }
+      return "null"
+    }
+    
+    console.log("[VoiceCallUI] Component RENDER", {
+      // Props
+      isInCall: true, // This component only renders when isInCall is true
+      activeCallId: call.callId,
+      callStatus: call.status,
+      remoteStreamId: getStreamId(remoteStream),
+      localStreamId: "N/A - not passed as prop",
+      // Other relevant state
+      isMuted,
+      callDuration,
+    })
+  })
 
   // Format call duration
   const formatDuration = (seconds: number) => {
@@ -39,8 +81,162 @@ export default function VoiceCallUI({
 
   const connectionQuality = getConnectionQuality()
 
+  // Handle remote stream audio playback
+  useEffect(() => {
+    if (!remoteStream || !audioRef.current) return
+
+    const audio = audioRef.current
+    
+    // Helper to get stream ID safely
+    const getStreamId = (srcObject: any): string => {
+      if (srcObject && typeof srcObject.id === 'string') {
+        return srcObject.id
+      }
+      return "null"
+    }
+    
+    // Log audio element identity
+    const currentStreamId = getStreamId(audio.srcObject)
+    
+    console.log("[Audio] useEffect triggered", {
+      audioElement: audio,
+      audioElementId: audio.src || "no src",
+      currentSrcObject: audio.srcObject?.constructor?.name || "null",
+      currentSrcObjectId: currentStreamId,
+      newStreamId: remoteStream.id,
+      newStreamTracks: remoteStream.getTracks().map(t => ({ id: t.id, kind: t.kind })),
+    })
+
+    console.log("[Audio] Before srcObject assignment", {
+      audioElement: audio,
+      oldSrcObject: currentStreamId,
+      newSrcObject: remoteStream.id,
+    })
+
+    // Only assign if it's a different stream
+    if (getStreamId(audio.srcObject) !== remoteStream.id) {
+      audio.srcObject = remoteStream
+    }
+
+    const newStreamId = getStreamId(audio.srcObject)
+    console.log("[Audio] After srcObject assignment", {
+      audioElement: audio,
+      srcObject: newStreamId,
+      paused: audio.paused,
+      readyState: audio.readyState,
+      muted: audio.muted,
+      volume: audio.volume,
+    })
+
+    // Play audio (must be triggered by user gesture)
+    const playAudio = async () => {
+      // Don't play if already playing
+      if (!audio.paused) {
+        console.log("[Audio] Already playing, skipping play()")
+        return
+      }
+
+      try {
+        const srcObjectId = getStreamId(audio.srcObject)
+        console.log("[Audio] Attempting play()", {
+          audioElement: audio,
+          srcObject: srcObjectId,
+          paused: audio.paused,
+        })
+        await audio.play()
+        console.log("[Audio] Playback started successfully", {
+          audioElement: audio,
+          paused: audio.paused,
+          readyState: audio.readyState,
+        })
+      } catch (err) {
+        // Handle AbortError specifically - it's harmless
+        if (err instanceof Error && err.name === 'AbortError') {
+          console.log("[Audio] play() aborted (expected during stream changes)")
+          return
+        }
+        console.error("[Audio] Failed to start playback:", err)
+        // Autoplay was prevented - this is expected on some browsers
+        // Audio will play on next user interaction
+      }
+    }
+
+    playAudio()
+
+    return () => {
+      // Don't clear srcObject on cleanup - only on actual unmount
+      // This prevents the AbortError
+      console.log("[Audio] useEffect cleanup (not clearing srcObject)", {
+        audioElement: audio,
+        paused: audio.paused,
+      })
+    }
+  }, [remoteStream])
+
+  // Monitor audio playback state
+  useEffect(() => {
+    if (!audioRef.current) return
+    
+    const audio = audioRef.current
+    
+    // Log audio state changes
+    const handlePlay = () => {
+      console.log("[Audio] Event: play", {
+        paused: audio.paused,
+        readyState: audio.readyState,
+        muted: audio.muted,
+        volume: audio.volume,
+      })
+    }
+    
+    const handlePause = () => {
+      console.log("[Audio] Event: pause", {
+        paused: audio.paused,
+        readyState: audio.readyState,
+      })
+    }
+    
+    const handleError = (err: any) => {
+      console.error("[Audio] Event: error", {
+        error: err,
+        paused: audio.paused,
+        readyState: audio.readyState,
+        errorCode: audio.error?.code,
+        errorMessage: audio.error?.message,
+      })
+    }
+    
+    const handleAbort = (err: any) => {
+      console.error("[Audio] Event: abort", {
+        error: err,
+        paused: audio.paused,
+        readyState: audio.readyState,
+      })
+    }
+
+    audio.addEventListener('play', handlePlay)
+    audio.addEventListener('pause', handlePause)
+    audio.addEventListener('error', handleError)
+    audio.addEventListener('abort', handleAbort)
+
+    return () => {
+      audio.removeEventListener('play', handlePlay)
+      audio.removeEventListener('pause', handlePause)
+      audio.removeEventListener('error', handleError)
+      audio.removeEventListener('abort', handleAbort)
+    }
+  }, [remoteStream])
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+      {/* Hidden audio element for remote stream playback */}
+      <audio
+        ref={audioRef}
+        autoPlay
+        playsInline
+        className="hidden"
+      />
+      
       <div className="flex flex-col items-center justify-center w-full max-w-md px-8">
         {/* Remote User Avatar */}
         <div className="relative mb-8">

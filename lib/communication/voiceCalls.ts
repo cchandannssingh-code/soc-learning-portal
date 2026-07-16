@@ -20,6 +20,11 @@ import { VoiceCall, CallEvent, CallStatus } from "@/types/communication"
 const VOICE_CALLS_COLLECTION = "voice_calls"
 const CALL_EVENTS_COLLECTION = "events"
 
+// Diagnostic logging helper
+const log = (prefix: string, data: any) => {
+  console.log(`[${prefix}]`, JSON.stringify(data, null, 2))
+}
+
 /**
  * Generate deterministic call ID from two user IDs and timestamp
  */
@@ -131,24 +136,42 @@ export function subscribeToCallEvents(
   callId: string,
   callback: (events: CallEvent[]) => void
 ): () => void {
+  log("[Firestore] Subscribe to call events", { callId })
   const eventsRef = collection(db, VOICE_CALLS_COLLECTION, callId, CALL_EVENTS_COLLECTION)
   const q = query(eventsRef, orderBy("timestamp", "asc"))
 
   const unsubscribe = onSnapshot(
     q,
     (snapshot) => {
-      const events: CallEvent[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as CallEvent[]
-      callback(events)
+      // Use docChanges() to process only new/modified documents
+      const changes = snapshot.docChanges()
+      
+      // Only process added or modified documents
+      const newEvents: CallEvent[] = []
+      changes.forEach((change) => {
+        if (change.type === "added" || change.type === "modified") {
+          const event = {
+            id: change.doc.id,
+            ...change.doc.data(),
+          } as CallEvent
+          newEvents.push(event)
+        }
+      })
+      
+      // Only callback if there are new events
+      if (newEvents.length > 0) {
+        callback(newEvents)
+      }
     },
     (error) => {
       console.error("Call events subscription error:", error)
     }
   )
 
-  return unsubscribe
+  return () => {
+    log("[Firestore] Unsubscribe from call events", { callId })
+    unsubscribe()
+  }
 }
 
 /**
@@ -158,6 +181,7 @@ export function subscribeToCall(
   callId: string,
   callback: (call: VoiceCall | null) => void
 ): () => void {
+  log("[Firestore] Subscribe to call", { callId })
   const callRef = doc(collection(db, VOICE_CALLS_COLLECTION), callId)
 
   const unsubscribe = onSnapshot(
@@ -178,7 +202,10 @@ export function subscribeToCall(
     }
   )
 
-  return unsubscribe
+  return () => {
+    log("[Firestore] Unsubscribe from call", { callId })
+    unsubscribe()
+  }
 }
 
 /**

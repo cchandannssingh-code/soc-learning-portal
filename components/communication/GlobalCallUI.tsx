@@ -29,6 +29,17 @@ export default function GlobalCallUI() {
     remoteStream,
     isInCall,
   } = useVoiceCall(userId, userName)
+  
+  // Log every render with state
+  useEffect(() => {
+    console.log("[GlobalCallUI] RENDER", {
+      isInCall,
+      hasActiveCall: !!activeCall,
+      activeCallId: activeCall?.callId || "null",
+      callStatus,
+      remoteStreamId: (remoteStream as MediaStream | null)?.id || "null",
+    })
+  })
 
   // Auto-initiate call if triggered from other tabs
   useEffect(() => {
