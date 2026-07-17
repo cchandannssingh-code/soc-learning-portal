@@ -18,22 +18,8 @@ import {
 
 const ICE_SERVERS = {
   iceServers: [
-    { urls: "stun:stun.relay.metered.ca:80" },
-    {
-      urls: "turn:relay.metered.ca:80",
-      username: "openrelayproject",
-      credential: "openrelayproject",
-    },
-    {
-      urls: "turn:relay.metered.ca:443",
-      username: "openrelayproject",
-      credential: "openrelayproject",
-    },
-    {
-      urls: "turn:relay.metered.ca:443?transport=tcp",
-      username: "openrelayproject",
-      credential: "openrelayproject",
-    },
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "stun:stun1.l.google.com:19302" },
   ],
 }
 
@@ -530,6 +516,15 @@ export function useVoiceCall(userId: string, userName: string): UseVoiceCallRetu
         connectionState: pc.connectionState,
         signalingState: pc.signalingState,
       })
+
+      // ICE reaching "connected" or "completed" means media can flow.
+      // Don't rely solely on pc.connectionState - it can lag behind or
+      // never fire "connected" even though ICE (and audio) is actually
+      // working, which was causing the UI to stay stuck on "connecting".
+      if (state === "connected" || state === "completed") {
+        setCallStatus("connected")
+      }
+
       // Only treat "failed" as terminal - "disconnected" is recoverable
       if (state === "failed") {
         console.error(`ICE connection ${state}`)
@@ -1007,10 +1002,11 @@ export function useVoiceCall(userId: string, userName: string): UseVoiceCallRetu
 
   // Cancel outgoing call
   const cancelOutgoingCall = useCallback(async () => {
-    if (!activeCall) return
+    const callId = currentCallIdRef.current
+    if (!callId) return
 
     try {
-      await cancelCall(activeCall.callId)
+      await cancelCall(callId)
       cleanup()
       setActiveCall(null)
       setCallStatus("cancelled")
@@ -1024,7 +1020,7 @@ export function useVoiceCall(userId: string, userName: string): UseVoiceCallRetu
       console.error("Failed to cancel call:", err)
       setError("Failed to cancel call")
     }
-  }, [activeCall, cleanup])
+  }, [cleanup])
 
   // End active call
   const endActiveCall = useCallback(async () => {
