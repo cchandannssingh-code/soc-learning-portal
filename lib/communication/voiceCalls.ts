@@ -20,20 +20,41 @@ import { VoiceCall, CallEvent, CallStatus } from "@/types/communication"
 const VOICE_CALLS_COLLECTION = "voice_calls"
 const CALL_EVENTS_COLLECTION = "events"
 
+// A "ringing" call older than this is considered abandoned/stale and will
+// be ignored by subscribeToIncomingCalls, even if its status was never
+// cleanly updated (e.g. caller's browser crashed before cancel/timeout
+// could run). This matches the 30s ring timeout in useVoiceCall + a buffer.
+const RING_STALE_MS = 45 * 1000
+
 // Diagnostic logging helper
 const log = (prefix: string, data: any) => {
   console.log(`[${prefix}]`, JSON.stringify(data, null, 2))
 }
 
 /**
- * Generate deterministic call ID from two user IDs and timestamp
+ * Deterministic key for a user pair - NOT used as the document ID anymore.
+ * Kept only if other code references it; prefer generateUniqueCallId for
+ * anything that creates a new call document.
  */
 export function getCallId(userId1: string, userId2: string): string {
   return [userId1, userId2].sort().join("_")
 }
 
 /**
- * Create a new voice call
+ * Generate a unique ID per call ATTEMPT (not per user pair).
+ * This is the fix for calls "leaking" into future sessions: previously every
+ * call between the same two users reused the same Firestore document, so a
+ * leftover "ringing" status from a crashed/abandoned call would resurface
+ * as a brand new incoming call the next time either user opened the app.
+ */
+function generateUniqueCallId(userId1: string, userId2: string): string {
+  const pairKey = [userId1, userId2].sort().join("_")
+  const randomSuffix = Math.random().toString(36).slice(2, 8)
+  return `${pairKey}_${Date.now()}_${randomSuffix}`
+}
+
+/**
+ * Create a new voice call - always a fresh document, never reused
  */
 export async function createVoiceCall(
   initiatorId: string,
@@ -41,7 +62,7 @@ export async function createVoiceCall(
   targetUserId: string,
   targetUserName: string
 ): Promise<string> {
-  const callId = getCallId(initiatorId, targetUserId)
+  const callId = generateUniqueCallId(initiatorId, targetUserId)
   const callRef = doc(collection(db, VOICE_CALLS_COLLECTION), callId)
 
   const callData: Partial<VoiceCall> = {
@@ -53,10 +74,13 @@ export async function createVoiceCall(
     },
     status: "ringing",
     initiatorId,
-    startedAt: new Date(),
+    startedAt: serverTimestamp() as any,
   }
 
-  await setDoc(callRef, callData, { merge: true })
+  // No `merge: true` here on purpose - this must always be a brand new,
+  // empty document. Merging risked inheriting stale fields (offer, answer,
+  // status) from a previous call between the same two users.
+  await setDoc(callRef, callData)
 
   return callId
 }
@@ -224,10 +248,21 @@ export function subscribeToIncomingCalls(
   const unsubscribe = onSnapshot(
     q,
     (snapshot) => {
-      // Find calls where user is not the initiator (incoming calls)
+      const now = Date.now()
+
+      // Find calls where user is not the initiator (incoming calls),
+      // and drop anything stale - a "ringing" call older than the ring
+      // timeout is abandoned, not a real incoming call. This is a safety
+      // net on top of unique-per-call document IDs: even if a call somehow
+      // never gets a terminal status written, it can't resurface as new.
       const incomingCalls = snapshot.docs
         .map((doc) => ({ id: doc.id, ...doc.data() } as VoiceCall))
         .filter((call) => call.initiatorId !== userId)
+        .filter((call: any) => {
+          const startedMs = call.startedAt?.toMillis ? call.startedAt.toMillis() : 0
+          if (!startedMs) return false
+          return now - startedMs < RING_STALE_MS
+        })
 
       if (incomingCalls.length > 0) {
         // Return the most recent incoming call
@@ -280,7 +315,9 @@ export async function isUserInCall(userId: string): Promise<boolean> {
   const q = query(
     collection(db, VOICE_CALLS_COLLECTION),
     where("participants", "array-contains", userId),
-    where("status", "in", ["ringing", "connecting", "active"])
+    // NOTE: "active" was never an actual status your app sets (it's
+    // "connected") - fixed to match the real CallStatus values.
+    where("status", "in", ["ringing", "connecting", "connected"])
   )
 
   const snapshot = await getDocs(q)

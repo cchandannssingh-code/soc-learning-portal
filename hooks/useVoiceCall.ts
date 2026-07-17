@@ -18,10 +18,25 @@ import {
 
 const ICE_SERVERS = {
   iceServers: [
-    { urls: "stun:stun.l.google.com:19302" },
-    { urls: "stun:stun1.l.google.com:19302" },
+    { urls: "stun:stun.relay.metered.ca:80" },
+    {
+      urls: "turn:relay.metered.ca:80",
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
+    {
+      urls: "turn:relay.metered.ca:443",
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
+    {
+      urls: "turn:relay.metered.ca:443?transport=tcp",
+      username: "openrelayproject",
+      credential: "openrelayproject",
+    },
   ],
 }
+
 
 // Diagnostic logging helper
 const log = (prefix: string, data: any) => {
@@ -174,19 +189,23 @@ export function useVoiceCall(userId: string, userName: string): UseVoiceCallRetu
         callEventsUnsubscribeRef.current()
         callEventsUnsubscribeRef.current = null
       }
-      if (incomingCallsUnsubscribeRef.current) {
-        incomingCallsUnsubscribeRef.current()
-        incomingCallsUnsubscribeRef.current = null
-      }
       if (activeCallUnsubscribeRef.current) {
         activeCallUnsubscribeRef.current()
         activeCallUnsubscribeRef.current = null
       }
+      // NOTE: incomingCallsUnsubscribeRef is NOT cleaned up here -
+      // it's a global listener that stays alive for the entire session
 
       // Stop ringtone
       if (ringtoneRef.current) {
         ringtoneRef.current.pause()
       }
+
+      // Clear ICE candidate queue
+      iceCandidateQueueRef.current.clear()
+      
+      // Clear processed candidates
+      processedCandidatesRef.current.clear()
 
       // Reset state
       setLocalStream(null)
@@ -511,7 +530,8 @@ export function useVoiceCall(userId: string, userName: string): UseVoiceCallRetu
         connectionState: pc.connectionState,
         signalingState: pc.signalingState,
       })
-      if (state === "failed" || state === "disconnected") {
+      // Only treat "failed" as terminal - "disconnected" is recoverable
+      if (state === "failed") {
         console.error(`ICE connection ${state}`)
         setError(`Connection ${state}`)
         setCallStatus("failed")
