@@ -18,15 +18,17 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AuthProvider>
-          <div className="flex flex-col min-h-screen">
-            <SearchBar notes={allNotes} />
+          <div className="flex min-h-screen">
             <div className="flex flex-col md:flex-row flex-1">
               <Sidebar tree={tree} />
-              <main className="flex-1 bg-[#f4f7fb] p-4 md:p-8">
-                {children}
-                <footer className="mt-10 text-center text-sm text-slate-500 py-6">
-                  © 2026 SOCForge. All rights reserved.
-                </footer>
+              <main className="flex-1 min-w-0 bg-[#f4f7fb]">
+                <SearchBar notes={allNotes} />
+                <div className="p-4 md:p-8">
+                  {children}
+                  <footer className="mt-10 text-center text-sm text-slate-500 py-6">
+                    © 2026 SOCForge. All rights reserved.
+                  </footer>
+                </div>
               </main>
             </div>
           </div>

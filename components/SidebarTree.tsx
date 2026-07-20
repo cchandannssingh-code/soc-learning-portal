@@ -12,6 +12,40 @@ interface SidebarTreeProps {
   level?: number
 }
 
+// Scrolls the clicked element to the vertical center of its nearest
+// scrollable ancestor. Waits briefly so the accordion's max-h transition
+// has time to update layout height first, then respects
+// prefers-reduced-motion.
+function scrollToCenter(el: HTMLElement | null) {
+  if (!el) return
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+  setTimeout(() => {
+    el.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "center",
+    })
+  }, 50)
+}
+
+// Formats a raw slug/name into a clean display label.
+// "account-management" -> "Account Management"
+// "Usb-Device-Monitoring" -> "USB Device Monitoring"
+function formatLabel(name: string): string {
+  const acronyms = new Set(["usb", "kql", "id", "ad", "dns", "ip", "api"])
+
+  return name
+    .split(/[-_]/)
+    .map((word) => {
+      const lower = word.toLowerCase()
+      if (acronyms.has(lower)) return lower.toUpperCase()
+      return lower.charAt(0).toUpperCase() + lower.slice(1)
+    })
+    .join(" ")
+}
+
 const getCategoryIcon = (name: string) => {
   const cat = name.toLowerCase()
   if (cat.includes("window")) {
@@ -53,15 +87,11 @@ export default function SidebarTree({
   const pathname = usePathname()
 
   return (
-    <div className={level === 0 ? "space-y-3" : "space-y-1 pl-4"}>
+    <div className={level === 0 ? "space-y-3" : "space-y-1.5 pl-3"}>
       {items.map((item) => {
         if (item.type === "folder" && item.children) {
           const isOpen = openFolders[item.path] || false
           const key = item.path
-          const assessmentUrl = `/assessment/${item.path.toLowerCase()}`
-          const isAssessmentActive = pathname === assessmentUrl
-
-          // For top-level folders, use category icon
           const folderIcon = level === 0 ? getCategoryIcon(item.name) : null
 
           return (
@@ -74,19 +104,24 @@ export default function SidebarTree({
               }
             >
               <button
-                onClick={() => toggleFolder(key)}
+                onClick={(e) => {
+                  toggleFolder(key)
+                  scrollToCenter(e.currentTarget)
+                }}
                 className={`
-                  w-full flex items-center justify-between px-4 py-3.5 transition-all duration-200 group/cat
-                  ${level === 0 ? "font-bold text-xs uppercase tracking-wide" : "text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900"}
+                  w-full flex items-center justify-between transition-all duration-200 group/cat
+                  ${level === 0 ? "px-4 py-3 font-bold text-xs uppercase tracking-wide" : "px-3 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900"}
                   ${openFolders[key] && level === 0 ? "bg-indigo-50/40 text-indigo-600" : ""}
                 `}
               >
-                <span className="flex items-center">
+                <span className="flex items-center min-w-0">
                   {folderIcon}
-                  <span className={level === 0 ? "font-display font-bold" : ""}>{item.name}</span>
+                  <span className={`truncate ${level === 0 ? "font-display font-bold" : ""}`}>
+                    {formatLabel(item.name)}
+                  </span>
                 </span>
                 <svg
-                  className={`w-4 h-4 text-slate-400 group-hover/cat:text-slate-600 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                  className={`w-4 h-4 shrink-0 text-slate-400 group-hover/cat:text-slate-600 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -102,7 +137,7 @@ export default function SidebarTree({
                   ${isOpen ? "max-h-[4000px] opacity-100" : "max-h-0 opacity-0"}
                 `}
               >
-                <div className={level === 0 ? "p-2.5 space-y-2.5 bg-white/40" : "p-2 space-y-1 bg-slate-50/20 border-t border-slate-100/50"}>
+                <div className={level === 0 ? "p-2 space-y-2 bg-white/40" : "p-1.5 space-y-1 bg-slate-50/20 border-t border-slate-100/50"}>
                   <SidebarTree
                     items={item.children}
                     openFolders={openFolders}
@@ -110,27 +145,6 @@ export default function SidebarTree({
                     setMobileOpen={setMobileOpen}
                     level={level + 1}
                   />
-
-                  {/* Assessment link only for folders that have notes */}
-                  {item.children.some(child => child.type === "file") && (
-                    <Link
-                      href={assessmentUrl}
-                      onClick={() => setMobileOpen(false)}
-                      className={`
-                        flex items-center px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-150
-                        ${
-                          isAssessmentActive
-                            ? "bg-indigo-100 text-indigo-800 border-l-2 border-indigo-600"
-                            : "text-indigo-600 bg-indigo-50/50 hover:bg-indigo-50 hover:text-indigo-700"
-                        }
-                      `}
-                    >
-                      <svg className="w-3.5 h-3.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                      </svg>
-                      Assessment
-                    </Link>
-                  )}
                 </div>
               </div>
             </div>
@@ -142,7 +156,10 @@ export default function SidebarTree({
             <Link
               key={item.path}
               href={`/notes/${item.note.slug}`}
-              onClick={() => setMobileOpen(false)}
+              onClick={(e) => {
+                setMobileOpen(false)
+                scrollToCenter(e.currentTarget)
+              }}
               className={`
                 flex items-center px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 group/item
                 ${
@@ -152,8 +169,35 @@ export default function SidebarTree({
                 }
               `}
             >
-              <span className={`w-1.5 h-1.5 rounded-full mr-2.5 transition-colors ${isActive ? "bg-indigo-600" : "bg-slate-300 group-hover/item:bg-slate-500"}`} />
+              <span className={`w-1.5 h-1.5 rounded-full mr-2.5 shrink-0 transition-colors ${isActive ? "bg-indigo-600" : "bg-slate-300 group-hover/item:bg-slate-500"}`} />
               <span className="truncate">{item.note.title}</span>
+            </Link>
+          )
+        } else if (item.type === "assessment" && item.assessment) {
+          const assessmentUrl = `/assessment/${item.assessment.slug}`
+          const isActive = pathname === assessmentUrl
+
+          return (
+            <Link
+              key={item.path}
+              href={assessmentUrl}
+              onClick={(e) => {
+                setMobileOpen(false)
+                scrollToCenter(e.currentTarget)
+              }}
+              className={`
+                flex items-center px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-150 group/item
+                ${
+                  isActive
+                    ? "bg-indigo-100 text-indigo-800 border-l-2 border-indigo-600"
+                    : "text-indigo-600 bg-indigo-50/50 hover:bg-indigo-50 hover:text-indigo-700"
+                }
+              `}
+            >
+              <svg className="w-3.5 h-3.5 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+              <span className="truncate">{item.assessment.title}</span>
             </Link>
           )
         }

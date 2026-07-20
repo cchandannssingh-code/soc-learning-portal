@@ -1,4 +1,4 @@
-import { getAssessmentByPath } from "@/lib/notes"
+import { getAssessmentBySlug } from "@/lib/notes"
 import AssessmentClient from "./AssessmentClient"
 
 // Default questions (fallback)
@@ -22,9 +22,11 @@ export default async function AssessmentPage({ params }: { params: Promise<{ slu
   const fullPath = slugArray.join("/")
   const folderName = slugArray.length > 0 ? slugArray[slugArray.length - 1] : "Assessment"
   
-  // Get custom assessment questions if they exist
-  const customQuestions = getAssessmentByPath(fullPath)
-  const questions = customQuestions || defaultQuestions
+  const assessment = getAssessmentBySlug(fullPath)
 
-  return <AssessmentClient questions={questions} folderName={folderName} />
+  if (!assessment) {
+    return <AssessmentClient questions={defaultQuestions} title={`${folderName} Assessment`} />
+  }
+
+  return <AssessmentClient questions={assessment.questions} title={assessment.title} />
 }

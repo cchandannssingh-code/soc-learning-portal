@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter, usePathname } from "next/navigation"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Note } from "@/lib/notes"
 
 interface SearchBarProps {
@@ -10,7 +10,6 @@ interface SearchBarProps {
 
 export default function SearchBar({ notes }: SearchBarProps) {
   const router = useRouter()
-  const pathname = usePathname()
   const [searchTerm, setSearchTerm] = useState("")
   const [isFocused, setIsFocused] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -18,12 +17,6 @@ export default function SearchBar({ notes }: SearchBarProps) {
   const filteredNotes = notes.filter((note) =>
     note.title.toLowerCase().includes(searchTerm.toLowerCase())
   )
-
-  // Reset search state on route change
-  useEffect(() => {
-    setSearchTerm("")
-    setSelectedIndex(-1)
-  }, [pathname])
 
   const navigateToNote = (note: Note) => {
     setSearchTerm("")
@@ -63,7 +56,7 @@ export default function SearchBar({ notes }: SearchBarProps) {
   }
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto px-4 py-4 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
+    <div className="relative w-full mt-16 md:mt-0 px-4 md:px-8 py-4 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
           <svg className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

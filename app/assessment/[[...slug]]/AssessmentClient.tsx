@@ -5,10 +5,10 @@ import { AssessmentQuestion } from "@/lib/notes";
 
 interface AssessmentClientProps {
   questions: AssessmentQuestion[];
-  folderName: string;
+  title: string;
 }
 
-export default function AssessmentClient({ questions, folderName }: AssessmentClientProps) {
+export default function AssessmentClient({ questions, title }: AssessmentClientProps) {
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -90,7 +90,7 @@ export default function AssessmentClient({ questions, folderName }: AssessmentCl
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-              {folderName.charAt(0).toUpperCase() + folderName.slice(1)} Assessment
+              {title}
             </h1>
           </div>
           <div className="flex items-center justify-between text-slate-600">
