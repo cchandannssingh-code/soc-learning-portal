@@ -4,7 +4,6 @@ import { getNotesTree, getAllNotes } from "@/lib/notes"
 import CommunicationHub from "@/components/communication/CommunicationHub"
 import GlobalCallUI from "@/components/communication/GlobalCallUI"
 import FocusModeLayout from "@/components/FocusModeLayout"
-import MouseGlow from "@/components/MouseGlow"
 
 export default function RootLayout({
   children,
@@ -17,7 +16,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <MouseGlow />
         <AuthProvider>
           <FocusModeLayout tree={tree} notes={allNotes}>
             {children}

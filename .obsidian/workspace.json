@@ -185,6 +185,8 @@
   },
   "active": "b3267d9200d8cd9c",
   "lastOpenFiles": [
+    "components/FloatingSearch.tsx",
+    "components/FloatingSearchBar.tsx",
     "components/MouseGlow.tsx",
     "app/learning/[[...path]]/page.tsx",
     "app/learning/[[...path]]",
@@ -195,8 +197,6 @@
     "components/learning/LearningHeader.tsx",
     "components/learning",
     "lib/learning.ts",
-    "app/layout.tsx",
-    "components/FocusModeLayout.tsx",
     "notes/kerberos/KERBEROS.md",
     "notes/windows/event-id/persistence/4698.md",
     "notes/windows/event-id/persistence/4697.md",

@@ -29,7 +29,7 @@ export default async function NotePage({
   }
 
   return (
-    <div className="page-transition space-y-6">
+    <div className="space-y-6">
 
       <div className="prose max-w-none">
 

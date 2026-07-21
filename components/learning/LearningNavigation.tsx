@@ -11,7 +11,7 @@ function LessonCard({
   lesson,
 }: {
   direction: "Previous" | "Next"
-  lesson: { slug: string; title: string; eventId?: string } | null
+  lesson: { slug: string; title: string } | null
 }) {
   if (!lesson) {
     return null

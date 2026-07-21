@@ -446,13 +446,13 @@ export function getNotesTree(): TreeItem[] {
 }
 
 export interface NavigationInfo {
-  previous: { slug: string; title: string; eventId?: string } | null
-  next: { slug: string; title: string; eventId?: string } | null
+  previous: { slug: string; title: string } | null
+  next: { slug: string; title: string } | null
 }
 
 export function getNavigationForNote(slug: string): NavigationInfo {
   const tree = getNotesTree()
-  const flatNotes: { slug: string; title: string; eventId?: string; type: "note" }[] = []
+  const flatNotes: { slug: string; title: string; type: "note" }[] = []
 
   function flattenTree(items: TreeItem[]): void {
     for (const item of items) {
@@ -460,7 +460,6 @@ export function getNavigationForNote(slug: string): NavigationInfo {
         flatNotes.push({
           slug: item.note.slug,
           title: item.note.title,
-          eventId: item.note.learning.eventId,
           type: "note",
         })
       } else if (item.type === "folder" && item.children) {
