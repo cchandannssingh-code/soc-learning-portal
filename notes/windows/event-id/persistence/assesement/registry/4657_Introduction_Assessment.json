@@ -1,0 +1,159 @@
+{
+  "assessmentName": "4657_Introduction",
+  "eventId": 4657,
+  "segment": "Introduction",
+  "timeLimit": 10,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-INT-001",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "What does Windows Security Event ID 4657 indicate?",
+      "options": [
+        "A registry key was created",
+        "A registry value was modified",
+        "A registry key was deleted",
+        "A registry handle was requested"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Event ID 4657 is logged when an existing registry value is modified.",
+      "objective": "Understand the purpose of Event ID 4657"
+    },
+    {
+      "id": "4657-INT-002",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which Windows log contains Event ID 4657?",
+      "options": [
+        "System",
+        "Application",
+        "Security",
+        "Setup"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Event ID 4657 is recorded in the Security log.",
+      "objective": "Identify the log source"
+    },
+    {
+      "id": "4657-INT-003",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "What type of activity triggers Event ID 4657?",
+      "options": [
+        "File creation",
+        "Registry value modification",
+        "User logon",
+        "Process termination"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The event is generated when an existing registry value is changed.",
+      "objective": "Recognize the triggering action"
+    },
+    {
+      "id": "4657-INT-004",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why do SOC analysts pay close attention to Event ID 4657?",
+      "options": [
+        "It always indicates malware infection",
+        "Registry modifications can be used for persistence and security tampering",
+        "It only records Windows updates",
+        "It only occurs during system startup"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Attackers frequently modify the registry to establish persistence or weaken security controls.",
+      "objective": "Understand security significance"
+    },
+    {
+      "id": "4657-INT-005",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which of the following is NOT a common impact of registry modifications?",
+      "options": [
+        "Startup behavior",
+        "Defender configuration",
+        "Service configuration",
+        "CPU hardware replacement"
+      ],
+      "correctAnswer": 3,
+      "explanation": "Registry changes affect software and configuration, not physical hardware.",
+      "objective": "Identify registry impact"
+    },
+    {
+      "id": "4657-INT-006",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which sequence best represents a common persistence scenario?",
+      "options": [
+        "4624 \u2192 4634",
+        "4688 \u2192 4657 \u2192 Persistence",
+        "4657 \u2192 4624 \u2192 4688",
+        "4663 \u2192 4625 \u2192 4648"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A process is created (4688), modifies a registry value (4657), and establishes persistence.",
+      "objective": "Understand attack flow"
+    },
+    {
+      "id": "4657-INT-007",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which factor primarily determines the severity of an Event ID 4657 alert?",
+      "options": [
+        "Registry path and context",
+        "Computer name",
+        "Event record number",
+        "Operating system version"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Severity depends on what registry location was modified and why.",
+      "objective": "Assess alert severity"
+    },
+    {
+      "id": "4657-INT-008",
+      "difficulty": "Easy",
+      "type": "true_false",
+      "question": "Event ID 4657 records the modification of an existing registry value.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": 0,
+      "explanation": "This is the primary purpose of Event ID 4657.",
+      "objective": "Reinforce the event definition"
+    },
+    {
+      "id": "4657-INT-009",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which registry modification would generally require the highest priority investigation?",
+      "options": [
+        "Browser preference update",
+        "Application theme change",
+        "Windows Defender configuration change",
+        "Printer setting update"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Changes affecting Defender may indicate security control tampering.",
+      "objective": "Prioritize investigations"
+    },
+    {
+      "id": "4657-INT-010",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Compared to Event ID 4656, Event ID 4657 specifically records:",
+      "options": [
+        "A registry access request",
+        "A registry value modification",
+        "A file deletion",
+        "A user logoff"
+      ],
+      "correctAnswer": 1,
+      "explanation": "4656 logs handle requests, while 4657 logs the actual registry value modification.",
+      "objective": "Differentiate related events"
+    }
+  ]
+}

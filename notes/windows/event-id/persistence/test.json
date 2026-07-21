@@ -1,0 +1,13 @@
+[
+  {
+    "question": "What does Event ID 4720 indicate?",
+    "options": [
+      "User account created",
+      "User account deleted",
+      "Password reset",
+      "Successful logon"
+    ],
+    "answer": 0,
+    "explanation": "Event ID 4720 is generated when a new user account is created."
+  }
+]

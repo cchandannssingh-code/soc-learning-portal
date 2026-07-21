@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "notes/kerberos/KERBEROS.md",
+                "file": "notes/windows/event-id/persistence/4657.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "KERBEROS"
+              "title": "4657"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "notes/kerberos/KERBEROS.md",
+                "file": "notes/windows/event-id/persistence/4657.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for KERBEROS"
+              "title": "Backlinks for 4657"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "notes/kerberos/KERBEROS.md",
+                "file": "notes/windows/event-id/persistence/4657.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from KERBEROS"
+              "title": "Outgoing links from 4657"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "notes/kerberos/KERBEROS.md",
+                "file": "notes/windows/event-id/persistence/4657.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of KERBEROS"
+              "title": "Outline of 4657"
             }
           }
         ]
@@ -185,20 +185,24 @@
   },
   "active": "b3267d9200d8cd9c",
   "lastOpenFiles": [
+    "notes/kerberos/KERBEROS.md",
+    "notes/windows/event-id/persistence/4698.md",
+    "notes/windows/event-id/persistence/asses1.json",
+    "notes/windows/event-id/persistence/assesement/services/4657_Introduction_Assessment.json",
+    "notes/windows/event-id/persistence/assesement/scheduled-task/4657_Introduction_Assessment.json",
+    "notes/windows/event-id/persistence/test.json",
+    "notes/windows/event-id/persistence/assesement/registry/4657_Introduction_Assessment.json",
+    "notes/windows/event-id/persistence/assesement/scheduled-task",
+    "notes/windows/event-id/persistence/4697.md",
+    "notes/windows/event-id/persistence/4657.md",
+    "notes/windows/event-id/persistence/assesement/services",
+    "notes/windows/event-id/persistence/assesement/service",
+    "notes/windows/event-id/persistence/assesement/registry",
+    "notes/windows/event-id/persistence/assesement",
     "notes/splunk/spl/statistical-commands/timechart.md",
-    "lib/notes.ts",
-    "lib/order-config.ts",
-    "notes/KQL/email-investigation",
-    "notes/KQL",
     "notes/splunk/spl/statistical-commands/rare.md",
-    "notes/splunk/spl/SPL Functions",
-    "notes/splunk/spl/Advanced SPL",
     "notes/splunk/spl/statistical-commands/top.md",
     "notes/splunk/spl/Dashboard.md",
-    "notes/splunk/spl/statistical-commands",
-    "notes/splunk/spl/Filtering & Extraction",
-    "notes/splunk/SPL (Search Processing Language)/SPL Basics/Untitled",
-    "notes/splunk/spl/SPL Basics",
     "notes/splunk/spl/Advanced SPL/append.md",
     "notes/splunk/spl/Advanced SPL/transaction.md",
     "notes/splunk/spl/statistical-commands/chart.md",
@@ -216,9 +220,6 @@
     "notes/splunk/spl/SPL Basics/fields.md",
     "notes/splunk/spl/SPL Basics/table.md",
     "notes/splunk/spl/statistical-commands/stats.md",
-    "notes/splunk/spl/Filtering & Extraction/eval.md",
-    "notes/splunk/spl/Filtering & Extraction/where.md",
-    "notes/splunk/spl/SPL Basics/search.md",
-    "notes/splunk/test.md"
+    "notes/splunk/spl/Filtering & Extraction/eval.md"
   ]
 }

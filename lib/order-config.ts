@@ -34,6 +34,17 @@ export const orderConfig: Record<string, number> = {
   // Inside windows/event-id/
   "windows/event-id/account-management": 1,
   "windows/event-id/authentication-logon": 2,
+  // Inside windows/event-id/persistence/
+  "windows/event-id/persistence/assessment": 5,
+  "windows/event-id/persistence/4657": 1,
+  "windows/event-id/persistence/4697": 4,
+  "windows/event-id/persistence/4698": 6,
+  "windows/event-id/persistence/4699": 7,
+  "windows/event-id/persistence/4700": 8,
+  "windows/event-id/persistence/4701": 9,
+
+
+
 }
 
 // Strips the file extension so a TreeItem's raw path (which may end in

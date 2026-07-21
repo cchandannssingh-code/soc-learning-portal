@@ -59,17 +59,21 @@ function normalizeAssessmentQuestion(value: unknown): AssessmentQuestion | undef
     return undefined
   }
 
-  const question = value as Partial<AssessmentQuestion> & { explanation?: unknown }
+  const question = value as Partial<AssessmentQuestion> & {
+    correctAnswer?: unknown
+    explanation?: unknown
+  }
+  const answer = typeof question.answer === "number" ? question.answer : question.correctAnswer
 
   if (
     typeof question.question !== "string" ||
     !Array.isArray(question.options) ||
     question.options.length === 0 ||
     !question.options.every((option) => typeof option === "string") ||
-    typeof question.answer !== "number" ||
-    !Number.isInteger(question.answer) ||
-    question.answer < 0 ||
-    question.answer >= question.options.length
+    typeof answer !== "number" ||
+    !Number.isInteger(answer) ||
+    answer < 0 ||
+    answer >= question.options.length
   ) {
     return undefined
   }
@@ -77,7 +81,7 @@ function normalizeAssessmentQuestion(value: unknown): AssessmentQuestion | undef
   return {
     question: question.question,
     options: question.options,
-    answer: question.answer,
+    answer,
     explanation: typeof question.explanation === "string" ? question.explanation : "",
   }
 }
@@ -99,10 +103,14 @@ function normalizeAssessmentData(value: unknown): ParsedAssessment | undefined {
     return undefined
   }
 
+  const titleSource = value as { title?: unknown; assessmentName?: unknown }
+
   return {
-    title: value && typeof value === "object" && typeof (value as { title?: unknown }).title === "string"
-      ? (value as { title: string }).title
-      : undefined,
+    title: typeof titleSource?.title === "string"
+      ? titleSource.title
+      : typeof titleSource?.assessmentName === "string"
+        ? titleSource.assessmentName
+        : undefined,
     questions: normalizedQuestions as AssessmentQuestion[],
   }
 }
