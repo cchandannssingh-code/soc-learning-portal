@@ -1,0 +1,161 @@
+{
+  "assessmentName": "4657_CommonAnalystMistakes",
+  "eventId": 4657,
+  "segment": "Common Analyst Mistakes",
+  "timeLimit": 10,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-MIS-001",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "An analyst immediately classifies every Event ID 4657 as malicious. What is the primary mistake?",
+      "options": [
+        "Ignoring business context",
+        "Ignoring Event ID",
+        "Ignoring Security ID",
+        "Ignoring registry type"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Many registry modifications are legitimate.",
+      "objective": "Avoid false positives"
+    },
+    {
+      "id": "4657-MIS-002",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A registry modification under HKLM\\...\\Run is closed because the process is digitally signed. What critical mistake was made?",
+      "options": [
+        "Assuming a trusted signature alone proves legitimacy",
+        "Ignoring the Handle ID",
+        "Ignoring the Event Record ID",
+        "Ignoring the registry value type"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Trusted processes can be abused or hijacked.",
+      "objective": "Validate beyond signature"
+    },
+    {
+      "id": "4657-MIS-003",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which oversight is most likely to cause an analyst to miss persistence?",
+      "options": [
+        "Not reviewing the modified registry path",
+        "Not reviewing the Event Version",
+        "Not reviewing the Task Category",
+        "Not reviewing the Handle ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Registry location determines persistence risk.",
+      "objective": "Identify persistence"
+    },
+    {
+      "id": "4657-MIS-004",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "An analyst reviews the Process Name but never compares the Old Value and New Value. What information is missed?",
+      "options": [
+        "The actual impact of the registry modification",
+        "The operating system version",
+        "The account SID format",
+        "The registry hive name"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The before/after values reveal what changed.",
+      "objective": "Impact analysis"
+    },
+    {
+      "id": "4657-MIS-005",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "A 4657 alert is investigated without correlating Event ID 4688. What is the biggest limitation?",
+      "options": [
+        "The process execution context is incomplete",
+        "The registry path cannot be determined",
+        "The SID cannot be resolved",
+        "The registry value cannot be identified"
+      ],
+      "correctAnswer": 0,
+      "explanation": "4688 provides process creation context.",
+      "objective": "Event correlation"
+    },
+    {
+      "id": "4657-MIS-006",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which analyst behavior is most likely to increase false negatives?",
+      "options": [
+        "Ignoring related alerts after deciding the first event is benign",
+        "Reviewing business change records",
+        "Verifying digital signatures",
+        "Comparing old and new values"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Attackers often generate multiple related events.",
+      "objective": "Holistic investigation"
+    },
+    {
+      "id": "4657-MIS-007",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why is relying only on the Security ID a poor investigation practice?",
+      "options": [
+        "It identifies who performed the action but not whether the action was malicious",
+        "Security IDs are always random",
+        "Security IDs identify the registry path",
+        "Security IDs identify the value type"
+      ],
+      "correctAnswer": 0,
+      "explanation": "User identity alone does not explain intent.",
+      "objective": "Context matters"
+    },
+    {
+      "id": "4657-MIS-008",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which mistake is most likely to result in an incorrect severity assessment?",
+      "options": [
+        "Ignoring the sensitivity of the registry path",
+        "Ignoring the computer name",
+        "Ignoring the event provider",
+        "Ignoring the event version"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Severity is heavily influenced by the registry location.",
+      "objective": "Prioritization"
+    },
+    {
+      "id": "4657-MIS-009",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "An analyst ignores a Defender registry change because the account is SYSTEM. What assumption is flawed?",
+      "options": [
+        "SYSTEM activity can still be malicious if abused by malware",
+        "SYSTEM accounts cannot modify the registry",
+        "SYSTEM always indicates malware",
+        "SYSTEM disables auditing"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Malware often executes as SYSTEM.",
+      "objective": "Avoid assumptions"
+    },
+    {
+      "id": "4657-MIS-010",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which investigation shortcut most reduces confidence in the final conclusion?",
+      "options": [
+        "Closing the alert before validating business context and related events",
+        "Reviewing process reputation",
+        "Checking command-line arguments",
+        "Reviewing registry values"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Premature closure risks missing malicious activity.",
+      "objective": "Investigation discipline"
+    }
+  ]
+}

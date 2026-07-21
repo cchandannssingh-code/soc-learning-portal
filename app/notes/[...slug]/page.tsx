@@ -2,6 +2,7 @@ import remarkGfm from "remark-gfm"
 import { getNoteBySlug } from "@/lib/notes"
 import ReactMarkdown from "react-markdown"
 import rehypeSlug from "rehype-slug"
+import LearningNavigation from "@/components/learning/LearningNavigation"
 
 export default async function NotePage({
   params,
@@ -28,7 +29,7 @@ export default async function NotePage({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="page-transition space-y-6">
 
       <div className="prose max-w-none">
 
@@ -40,6 +41,8 @@ export default async function NotePage({
         </ReactMarkdown>
 
       </div>
+
+      <LearningNavigation note={note} />
 
     </div>
   )

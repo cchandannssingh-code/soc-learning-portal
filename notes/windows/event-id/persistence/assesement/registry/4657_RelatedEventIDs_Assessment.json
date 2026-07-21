@@ -1,0 +1,161 @@
+{
+  "assessmentName": "4657_RelatedEventIDs",
+  "eventId": 4657,
+  "segment": "Related Event IDs",
+  "timeLimit": 10,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-REL-001",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which Event ID should typically be correlated first with 4657 to identify the process that modified the registry?",
+      "options": [
+        "4688 - Process Created",
+        "4663 - Object Access",
+        "4624 - Successful Logon",
+        "4672 - Special Privileges Assigned"
+      ],
+      "correctAnswer": 0,
+      "explanation": "4688 identifies the originating process and often includes the command line.",
+      "objective": "Correlate process execution"
+    },
+    {
+      "id": "4657-REL-002",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "4656 usually occurs before 4657 because it represents:",
+      "options": [
+        "A handle request to the registry object",
+        "The registry value modification",
+        "A scheduled task creation",
+        "A successful logon"
+      ],
+      "correctAnswer": 0,
+      "explanation": "4656 logs the request to access the object before the modification occurs.",
+      "objective": "Understand event sequence"
+    },
+    {
+      "id": "4657-REL-003",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "What additional information does Event ID 4663 provide when correlated with 4657?",
+      "options": [
+        "The registry object was actually accessed",
+        "The process command line",
+        "The user's password",
+        "The Windows version"
+      ],
+      "correctAnswer": 0,
+      "explanation": "4663 confirms object access operations.",
+      "objective": "Object access correlation"
+    },
+    {
+      "id": "4657-REL-004",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which event is most useful for identifying the user session associated with a 4657 event?",
+      "options": [
+        "4624 - Successful Logon",
+        "4689 - Process End",
+        "4698 - Scheduled Task",
+        "4648 - Explicit Credentials"
+      ],
+      "correctAnswer": 0,
+      "explanation": "4624 provides the logon session that can be linked via Logon ID.",
+      "objective": "User attribution"
+    },
+    {
+      "id": "4657-REL-005",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "A 4657 event modifying a Run key is followed by 4698. What is the strongest interpretation?",
+      "options": [
+        "Multiple persistence mechanisms may be present",
+        "The registry change failed",
+        "The task deleted the registry value",
+        "The events are unrelated"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Registry and scheduled task persistence together increase confidence.",
+      "objective": "Multi-technique persistence"
+    },
+    {
+      "id": "4657-REL-006",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which correlation best supports a privilege escalation or high-impact investigation?",
+      "options": [
+        "4672 followed by 4688 and 4657",
+        "4634 followed by 4624",
+        "4689 followed by 4663",
+        "4656 followed by 4625"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Special privileges before suspicious process and registry activity are significant.",
+      "objective": "Privilege correlation"
+    },
+    {
+      "id": "4657-REL-007",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why is Event ID 4689 sometimes useful when investigating 4657?",
+      "options": [
+        "It confirms when the modifying process terminated",
+        "It records registry value changes",
+        "It identifies the registry path",
+        "It records authentication"
+      ],
+      "correctAnswer": 0,
+      "explanation": "4689 can help complete the process timeline.",
+      "objective": "Process lifecycle"
+    },
+    {
+      "id": "4657-REL-008",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which event sequence most accurately represents registry modification activity?",
+      "options": [
+        "4688 \u2192 4656 \u2192 4663 \u2192 4657",
+        "4657 \u2192 4688 \u2192 4663 \u2192 4656",
+        "4624 \u2192 4657 \u2192 4656 \u2192 4688",
+        "4663 \u2192 4624 \u2192 4657 \u2192 4689"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The process starts, requests access, accesses the object, then modifies it.",
+      "objective": "Understand workflow"
+    },
+    {
+      "id": "4657-REL-009",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which related event would best help identify malicious command-line arguments used before a registry modification?",
+      "options": [
+        "4688 - Process Created",
+        "4663 - Object Access",
+        "4672 - Special Privileges",
+        "4624 - Successful Logon"
+      ],
+      "correctAnswer": 0,
+      "explanation": "4688 often contains process command-line details.",
+      "objective": "Command-line analysis"
+    },
+    {
+      "id": "4657-REL-010",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Why should analysts avoid investigating Event ID 4657 in isolation?",
+      "options": [
+        "Related events provide context, intent, and attack timeline",
+        "4657 is always a false positive",
+        "4657 contains no useful fields",
+        "Related events replace 4657"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Correlation is essential for accurate investigations.",
+      "objective": "Holistic analysis"
+    }
+  ]
+}

@@ -1,0 +1,307 @@
+{
+  "assessmentName": "4657_HighRiskRegistryLocations",
+  "eventId": 4657,
+  "segment": "High-Risk Registry Locations",
+  "timeLimit": 20,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-LOC-001",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which registry path is commonly used for startup persistence?",
+      "options": [
+        "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+        "HKLM\\SOFTWARE\\Classes",
+        "HKCU\\Console",
+        "HKLM\\HARDWARE"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Run keys execute programs at startup.",
+      "objective": "Identify Run keys"
+    },
+    {
+      "id": "4657-LOC-002",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "What is the purpose of the RunOnce registry key?",
+      "options": [
+        "Run every boot",
+        "Run once at next startup",
+        "Store drivers",
+        "Store certificates"
+      ],
+      "correctAnswer": 1,
+      "explanation": "RunOnce executes a program only once.",
+      "objective": "Understand RunOnce"
+    },
+    {
+      "id": "4657-LOC-003",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "A change under HKLM\\SYSTEM\\CurrentControlSet\\Services most likely affects:",
+      "options": [
+        "Browser bookmarks",
+        "Service configuration",
+        "Desktop wallpaper",
+        "Recycle Bin"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Services are configured under this path.",
+      "objective": "Identify Services"
+    },
+    {
+      "id": "4657-LOC-004",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Modification under the Windows Defender registry should generally be treated as:",
+      "options": [
+        "Low priority",
+        "High interest",
+        "Ignore",
+        "Informational"
+      ],
+      "correctAnswer": 1,
+      "explanation": "It may indicate security tampering.",
+      "objective": "Defender"
+    },
+    {
+      "id": "4657-LOC-005",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which registry location controls many RDP settings?",
+      "options": [
+        "Terminal Server",
+        "Run",
+        "Console",
+        "Policies\\Explorer"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Terminal Server keys configure RDP.",
+      "objective": "RDP"
+    },
+    {
+      "id": "4657-LOC-006",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which Winlogon value is commonly abused for persistence?",
+      "options": [
+        "Userinit",
+        "Language",
+        "Wallpaper",
+        "TimeZone"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Userinit and Shell are common persistence targets.",
+      "objective": "Winlogon"
+    },
+    {
+      "id": "4657-LOC-007",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "IFEO is commonly abused using which value?",
+      "options": [
+        "Debugger",
+        "Version",
+        "InstallDate",
+        "Icon"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Debugger can hijack process execution.",
+      "objective": "IFEO"
+    },
+    {
+      "id": "4657-LOC-008",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "AppInit_DLLs is primarily associated with:",
+      "options": [
+        "DLL injection",
+        "User passwords",
+        "Firewall rules",
+        "Certificates"
+      ],
+      "correctAnswer": 0,
+      "explanation": "It can load DLLs into processes.",
+      "objective": "AppInit"
+    },
+    {
+      "id": "4657-LOC-009",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "LSA registry modifications may indicate:",
+      "options": [
+        "Credential theft persistence",
+        "Printer updates",
+        "Theme changes",
+        "USB insertion"
+      ],
+      "correctAnswer": 0,
+      "explanation": "LSA packages are abused by credential theft malware.",
+      "objective": "LSA"
+    },
+    {
+      "id": "4657-LOC-010",
+      "difficulty": "Easy",
+      "type": "true_false",
+      "question": "True or False: Registry path determines the investigation priority.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Sensitive paths require greater attention.",
+      "objective": "Risk"
+    },
+    {
+      "id": "4657-LOC-011",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which path would you investigate first after a suspicious PowerShell execution?",
+      "options": [
+        "CurrentVersion\\Run",
+        "HKCU\\Control Panel\\Desktop",
+        "HKLM\\Fonts",
+        "HKCU\\Keyboard Layout"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Run keys are common persistence locations.",
+      "objective": "Investigation"
+    },
+    {
+      "id": "4657-LOC-012",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "An attacker enabling Remote Desktop is most likely to modify:",
+      "options": [
+        "Terminal Server registry",
+        "HKCR",
+        "HKU\\.DEFAULT\\Keyboard",
+        "HKLM\\BCD"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Terminal Server settings control RDP.",
+      "objective": "Attack scenario"
+    },
+    {
+      "id": "4657-LOC-013",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "A change under Services combined with Event ID 7045 may indicate:",
+      "options": [
+        "Service persistence",
+        "Wallpaper update",
+        "Time sync",
+        "Disk cleanup"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Both events relate to services.",
+      "objective": "Correlation"
+    },
+    {
+      "id": "4657-LOC-014",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which location is most associated with antivirus configuration?",
+      "options": [
+        "Windows Defender",
+        "Run",
+        "HKCR",
+        "Console"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Defender settings reside under its registry path.",
+      "objective": "Defender"
+    },
+    {
+      "id": "4657-LOC-015",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which path deserves the HIGHEST priority?",
+      "options": [
+        "HKLM\\...\\Winlogon",
+        "HKCU\\Console",
+        "HKLM\\Fonts",
+        "HKCU\\Control Panel"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Winlogon modifications can provide persistent code execution.",
+      "objective": "Prioritization"
+    },
+    {
+      "id": "4657-LOC-016",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why should analysts monitor RunOnceEx?",
+      "options": [
+        "Potential one-time persistence",
+        "Stores DNS settings",
+        "Contains drivers",
+        "Contains event logs"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Attackers may abuse one-time startup.",
+      "objective": "RunOnceEx"
+    },
+    {
+      "id": "4657-LOC-017",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "SafeBoot registry changes may indicate:",
+      "options": [
+        "Safe Mode manipulation",
+        "Browser cache cleanup",
+        "Monitor settings",
+        "Power plan change"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Malware can alter SafeBoot behavior.",
+      "objective": "SafeBoot"
+    },
+    {
+      "id": "4657-LOC-018",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which combination is most suspicious?",
+      "options": [
+        "powershell.exe modifying HKLM\\...\\Run",
+        "explorer.exe changing wallpaper",
+        "svchost.exe updating time zone",
+        "notepad.exe opening text"
+      ],
+      "correctAnswer": 0,
+      "explanation": "PowerShell modifying Run keys is a strong persistence indicator.",
+      "objective": "Scenario"
+    },
+    {
+      "id": "4657-LOC-019",
+      "difficulty": "Easy",
+      "type": "true_false",
+      "question": "True or False: Not every registry modification is malicious.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Legitimate software frequently updates the registry.",
+      "objective": "Context"
+    },
+    {
+      "id": "4657-LOC-020",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which registry location is MOST associated with credential providers and authentication?",
+      "options": [
+        "LSA",
+        "Run",
+        "Fonts",
+        "Console"
+      ],
+      "correctAnswer": 0,
+      "explanation": "LSA stores authentication-related configuration.",
+      "objective": "Authentication"
+    }
+  ]
+}

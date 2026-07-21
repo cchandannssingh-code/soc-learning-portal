@@ -1,0 +1,386 @@
+{
+  "assessmentName": "4657_MiscellaneousComplexConcepts",
+  "eventId": 4657,
+  "segment": "Miscellaneous Complex Conceptual Mix",
+  "timeLimit": 25,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-MIX-001",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A 4657 Run key modification by reg.exe launched from PowerShell after a remote logon with no approved change is best classified as?",
+      "options": [
+        "Likely malicious persistence",
+        "Likely legitimate admin activity",
+        "Inconclusive until reboot",
+        "Low priority registry maintenance"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Multiple correlated indicators strongly suggest persistence.",
+      "objective": "Correlation"
+    },
+    {
+      "id": "4657-MIX-002",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which field contributes most to determining the security impact of Event ID 4657?",
+      "options": [
+        "Object Name",
+        "Process Name",
+        "Security ID",
+        "Object Value Name"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The registry path determines sensitivity.",
+      "objective": "Registry path"
+    },
+    {
+      "id": "4657-MIX-003",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A signed process modifies Winlogon. Which evidence most increases confidence of malicious activity?",
+      "options": [
+        "Executed outside maintenance and launched by PowerShell",
+        "SYSTEM account",
+        "REG_SZ value",
+        "Matching Handle ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Context outweighs signature alone.",
+      "objective": "Context"
+    },
+    {
+      "id": "4657-MIX-004",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Why should 4657 rarely be investigated alone?",
+      "options": [
+        "It lacks complete attack context",
+        "It contains no useful fields",
+        "It only logs malware",
+        "It requires Sysmon"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Correlate with surrounding events.",
+      "objective": "Correlation"
+    },
+    {
+      "id": "4657-MIX-005",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Best next step after Defender registry tampering?",
+      "options": [
+        "Correlate process, user, command line, persistence",
+        "Restore settings immediately",
+        "Close alert",
+        "Escalate only if non-SYSTEM"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Investigate before remediation.",
+      "objective": "Workflow"
+    },
+    {
+      "id": "4657-MIX-006",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Highest-confidence defense evasion scenario?",
+      "options": [
+        "Unsigned executable disables Defender after privilege elevation",
+        "Signed installer updates Defender",
+        "Windows Update modifies Defender",
+        "MsMpEng updates settings"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Multiple indicators.",
+      "objective": "Defense evasion"
+    },
+    {
+      "id": "4657-MIX-007",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Object Name vs Object Value Name?",
+      "options": [
+        "Key vs specific value",
+        "Process vs key",
+        "User vs SID",
+        "Same information"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Key contains values.",
+      "objective": "Fields"
+    },
+    {
+      "id": "4657-MIX-008",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Highest fidelity hunt?",
+      "options": [
+        "Known persistence path + uncommon scripting process",
+        "All SYSTEM 4657",
+        "All REG_SZ",
+        "All HKLM"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Combine context.",
+      "objective": "Detection"
+    },
+    {
+      "id": "4657-MIX-009",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Mistake most likely to create false negative?",
+      "options": [
+        "Assuming signed software cannot establish persistence",
+        "Reviewing command line",
+        "Comparing values",
+        "Checking change records"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Signed binaries can be abused.",
+      "objective": "Judgement"
+    },
+    {
+      "id": "4657-MIX-010",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Evidence that most reduces severity for vendor-key change?",
+      "options": [
+        "Approved deployment with trustedinstaller during maintenance",
+        "SYSTEM account",
+        "REG_DWORD",
+        "Recent logon"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Business context matters.",
+      "objective": "Risk"
+    },
+    {
+      "id": "4657-MIX-011",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A 4657 event modifies HKLM\\...\\Services. Which additional evidence most strongly indicates persistence rather than a normal service update?",
+      "options": [
+        "Unsigned binary installed outside change window",
+        "Service description changed",
+        "REG_MULTI_SZ value",
+        "SYSTEM account"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-012",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which evidence should carry the LEAST weight when determining maliciousness?",
+      "options": [
+        "Registry value type",
+        "Registry path",
+        "Process ancestry",
+        "Business context"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-013",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Why is 'PowerShell modified the registry' alone insufficient for escalation?",
+      "options": [
+        "PowerShell has many legitimate administrative uses",
+        "PowerShell cannot modify HKLM",
+        "PowerShell always runs as SYSTEM",
+        "PowerShell always logs 4104"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-014",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which sequence deserves the highest priority? ",
+      "options": [
+        "4672 \u2192 4688(powershell) \u2192 4657(Defender)",
+        "4624 \u2192 4688(msiexec) \u2192 4657(Vendor)",
+        "4688(explorer) \u2192 4657(Desktop)",
+        "4688(svchost) \u2192 4657(TimeZone)"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-015",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A Run key is modified by trustedinstaller.exe during Patch Tuesday. Best assessment?",
+      "options": [
+        "Likely legitimate but verify change records",
+        "Automatically malicious",
+        "Critical persistence",
+        "Ignore without review"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-016",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which combination most reduces false positives in a detection rule?",
+      "options": [
+        "Sensitive path + suspicious process + no approved change",
+        "Sensitive path only",
+        "Process only",
+        "User only"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-017",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "What is the biggest risk of ignoring Old/New Value comparison?",
+      "options": [
+        "Missing the actual security impact",
+        "Missing the SID",
+        "Missing the Event ID",
+        "Missing the registry hive"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-018",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which is the strongest indicator of LOLBin abuse?",
+      "options": [
+        "reg.exe launched by powershell.exe modifying Run key",
+        "reg.exe launched by trustedinstaller updating vendor key",
+        "services.exe updating Services",
+        "explorer.exe updating HKCU"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-019",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "If both Sysmon Event 13 and Security 4657 exist, why review both?",
+      "options": [
+        "They provide complementary context and visibility",
+        "They always contain identical fields",
+        "4657 is redundant",
+        "Sysmon replaces Security logs"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-020",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which change is more suspicious?",
+      "options": [
+        "Userinit value changed to custom executable",
+        "Application version updated",
+        "MRU list updated",
+        "Theme setting changed"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-021",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which evidence most supports benign activity?",
+      "options": [
+        "Vendor documentation matches registry modification",
+        "SYSTEM account",
+        "REG_BINARY type",
+        "HKLM path"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-022",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which investigation question should come before remediation?",
+      "options": [
+        "Could this change be part of an approved business activity?",
+        "Is the host online?",
+        "How much RAM is installed?",
+        "What Windows edition is running?"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-023",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Why is process parent-child relationship valuable?",
+      "options": [
+        "It reveals execution context and potential abuse chains",
+        "It identifies registry types",
+        "It resolves SIDs",
+        "It determines hive names"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-024",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which alert deserves escalation even if malware is not detected?",
+      "options": [
+        "Winlogon modification by unsigned executable",
+        "Vendor key updated by installer",
+        "Explorer updates HKCU settings",
+        "Office changes MRU entries"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    },
+    {
+      "id": "4657-MIX-025",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "What best summarizes expert analysis of Event 4657?",
+      "options": [
+        "Evaluate path, process, user, values, timeline, and business context together",
+        "Investigate only the process",
+        "Investigate only the registry path",
+        "Treat every 4657 equally"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The correct choice reflects the strongest investigation practice based on multiple correlated indicators.",
+      "objective": "Advanced conceptual reasoning"
+    }
+  ]
+}

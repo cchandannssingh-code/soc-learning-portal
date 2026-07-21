@@ -1,0 +1,382 @@
+{
+  "assessmentName": "4657_EventFields",
+  "eventId": 4657,
+  "segment": "Event Fields Explained",
+  "timeLimit": 20,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-FLD-001",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which field identifies the account that performed the registry modification?",
+      "options": [
+        "Security ID",
+        "Handle ID",
+        "Object Name",
+        "Process ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Security ID identifies the account.",
+      "objective": "Identify Subject fields"
+    },
+    {
+      "id": "4657-FLD-002",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "What does Security ID S-1-5-18 represent?",
+      "options": [
+        "Administrator",
+        "SYSTEM",
+        "LOCAL SERVICE",
+        "NETWORK SERVICE"
+      ],
+      "correctAnswer": 1,
+      "explanation": "S-1-5-18 is the SYSTEM account.",
+      "objective": "Recognize well-known SIDs"
+    },
+    {
+      "id": "4657-FLD-003",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "What does the Logon ID represent?",
+      "options": [
+        "Registry path",
+        "User logon session",
+        "Process hash",
+        "Registry type"
+      ],
+      "correctAnswer": 1,
+      "explanation": "It identifies the logon session.",
+      "objective": "Understand Logon ID"
+    },
+    {
+      "id": "4657-FLD-004",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "What does Object Name represent?",
+      "options": [
+        "Modified registry key path",
+        "Modified file path",
+        "Executable path",
+        "User SID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Object Name is the registry key.",
+      "objective": "Interpret Object Name"
+    },
+    {
+      "id": "4657-FLD-005",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Object Value Name indicates:",
+      "options": [
+        "Registry hive",
+        "Specific registry value modified",
+        "User name",
+        "Service name"
+      ],
+      "correctAnswer": 1,
+      "explanation": "It identifies the value changed.",
+      "objective": "Interpret Object Value Name"
+    },
+    {
+      "id": "4657-FLD-006",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Operation Type 'Existing registry value modified' means:",
+      "options": [
+        "A value was deleted",
+        "An existing value changed",
+        "A key was created",
+        "Permissions changed"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The value already existed and was updated.",
+      "objective": "Understand Operation Type"
+    },
+    {
+      "id": "4657-FLD-007",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "What is the purpose of Handle ID?",
+      "options": [
+        "Identify the opened registry handle",
+        "Show malware family",
+        "Identify registry hive",
+        "Identify log source"
+      ],
+      "correctAnswer": 0,
+      "explanation": "It references the opened object handle.",
+      "objective": "Understand Handle ID"
+    },
+    {
+      "id": "4657-FLD-008",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Process ID identifies:",
+      "options": [
+        "Registry hive",
+        "Responsible process",
+        "User account",
+        "Domain"
+      ],
+      "correctAnswer": 1,
+      "explanation": "PID identifies the modifying process.",
+      "objective": "Interpret Process ID"
+    },
+    {
+      "id": "4657-FLD-009",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Process Name shows:",
+      "options": [
+        "Registry key",
+        "Executable that modified the registry",
+        "Domain",
+        "Logon session"
+      ],
+      "correctAnswer": 1,
+      "explanation": "It identifies the executable.",
+      "objective": "Interpret Process Name"
+    },
+    {
+      "id": "4657-FLD-010",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Old Value represents:",
+      "options": [
+        "Current value",
+        "Previous value before change",
+        "Registry type",
+        "Registry hive"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Old Value shows the previous data.",
+      "objective": "Interpret change"
+    },
+    {
+      "id": "4657-FLD-011",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "New Value represents:",
+      "options": [
+        "Deleted value",
+        "Current value after modification",
+        "Parent process",
+        "Registry key"
+      ],
+      "correctAnswer": 1,
+      "explanation": "New Value is the updated data.",
+      "objective": "Interpret change"
+    },
+    {
+      "id": "4657-FLD-012",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which field helps determine exactly what setting changed?",
+      "options": [
+        "Object Value Name",
+        "Handle ID",
+        "Logon ID",
+        "Security ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The value name identifies the specific setting.",
+      "objective": "Identify changed setting"
+    },
+    {
+      "id": "4657-FLD-013",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which combination best explains who made the change?",
+      "options": [
+        "Object Name + Old Value",
+        "Security ID + Process Name",
+        "New Value + Handle ID",
+        "Registry Type + PID"
+      ],
+      "correctAnswer": 1,
+      "explanation": "User identity and executable together identify the actor.",
+      "objective": "Correlate fields"
+    },
+    {
+      "id": "4657-FLD-014",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Why compare Old Value and New Value?",
+      "options": [
+        "Determine OS version",
+        "Measure impact of the change",
+        "Find disk usage",
+        "Determine RAM usage"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Comparison reveals what actually changed.",
+      "objective": "Impact analysis"
+    },
+    {
+      "id": "4657-FLD-015",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which field would you use to locate the related Event ID 4688?",
+      "options": [
+        "Object Name",
+        "Process ID",
+        "Security ID",
+        "New Value"
+      ],
+      "correctAnswer": 1,
+      "explanation": "PID can be correlated with 4688.",
+      "objective": "Event correlation"
+    },
+    {
+      "id": "4657-FLD-016",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "If Process Name is powershell.exe, the analyst should:",
+      "options": [
+        "Ignore the event",
+        "Investigate further",
+        "Delete the registry",
+        "Restart the host"
+      ],
+      "correctAnswer": 1,
+      "explanation": "PowerShell modifying sensitive registry locations warrants review.",
+      "objective": "Investigation"
+    },
+    {
+      "id": "4657-FLD-017",
+      "difficulty": "Easy",
+      "type": "true_false",
+      "question": "True or False: Object Name is the registry key path.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Object Name is the registry path.",
+      "objective": "Registry fields"
+    },
+    {
+      "id": "4657-FLD-018",
+      "difficulty": "Easy",
+      "type": "true_false",
+      "question": "True or False: Process Name identifies the executable that modified the registry.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Process Name identifies the executable.",
+      "objective": "Registry fields"
+    },
+    {
+      "id": "4657-FLD-019",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which field is most useful for determining whether persistence was established?",
+      "options": [
+        "Object Name",
+        "Handle ID",
+        "Logon ID",
+        "Security ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The registry path reveals whether it is a startup or persistence location.",
+      "objective": "Persistence analysis"
+    },
+    {
+      "id": "4657-FLD-020",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "A SYSTEM account modifying a vendor registry key during an update is most likely:",
+      "options": [
+        "Always malicious",
+        "Potentially legitimate",
+        "Credential theft",
+        "Ransomware"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Context matters; SYSTEM updates are often expected.",
+      "objective": "Context analysis"
+    },
+    {
+      "id": "4657-FLD-021",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which three fields together provide the strongest investigation context?",
+      "options": [
+        "Security ID, Object Name, Process Name",
+        "Handle ID, Logon ID, Domain",
+        "Old Value, Domain, PID",
+        "Registry Type, SID, Domain"
+      ],
+      "correctAnswer": 0,
+      "explanation": "These identify who, where, and what process.",
+      "objective": "Field correlation"
+    },
+    {
+      "id": "4657-FLD-022",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which field contains the registry key path?",
+      "options": [
+        "Object Name",
+        "Process ID",
+        "Old Value",
+        "Handle ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Object Name stores the key path.",
+      "objective": "Field identification"
+    },
+    {
+      "id": "4657-FLD-023",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which field tells you exactly what registry entry inside the key changed?",
+      "options": [
+        "Object Value Name",
+        "Security ID",
+        "Handle ID",
+        "Operation Type"
+      ],
+      "correctAnswer": 0,
+      "explanation": "It identifies the modified value.",
+      "objective": "Field identification"
+    },
+    {
+      "id": "4657-FLD-024",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A change to HKLM\\...\\Run is identified primarily through which field?",
+      "options": [
+        "Object Name",
+        "Security ID",
+        "Old Value",
+        "Process ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The registry path is stored in Object Name.",
+      "objective": "Registry analysis"
+    },
+    {
+      "id": "4657-FLD-025",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why is Process Name one of the most important fields?",
+      "options": [
+        "It shows OS version",
+        "It identifies the executable responsible",
+        "It shows registry type",
+        "It identifies the event source"
+      ],
+      "correctAnswer": 1,
+      "explanation": "It reveals which executable performed the modification.",
+      "objective": "Investigation"
+    }
+  ]
+}

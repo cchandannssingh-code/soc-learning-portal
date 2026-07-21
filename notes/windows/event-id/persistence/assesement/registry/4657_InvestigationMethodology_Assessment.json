@@ -1,0 +1,307 @@
+{
+  "assessmentName": "4657_InvestigationMethodology",
+  "eventId": 4657,
+  "segment": "Investigation Methodology",
+  "timeLimit": 20,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-INV-001",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "What should be the first step when investigating Event ID 4657?",
+      "options": [
+        "Review the Object Name",
+        "Restart the system",
+        "Delete the registry key",
+        "Check free disk space"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The registry path provides immediate context.",
+      "objective": "Follow investigation workflow"
+    },
+    {
+      "id": "4657-INV-002",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "After identifying the registry path, what should you review next?",
+      "options": [
+        "Object Value Name",
+        "Computer uptime",
+        "Installed RAM",
+        "MAC address"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Determine the exact value that changed.",
+      "objective": "Identify changed setting"
+    },
+    {
+      "id": "4657-INV-003",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which field identifies the executable that modified the registry?",
+      "options": [
+        "Process Name",
+        "Handle ID",
+        "Security ID",
+        "Logon ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Process Name identifies the responsible executable.",
+      "objective": "Identify responsible process"
+    },
+    {
+      "id": "4657-INV-004",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why should you compare the Old Value and New Value?",
+      "options": [
+        "To determine OS version",
+        "To understand the impact of the change",
+        "To identify the domain",
+        "To find the registry hive"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Comparing values reveals exactly what changed.",
+      "objective": "Impact analysis"
+    },
+    {
+      "id": "4657-INV-005",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which event should you correlate with Event ID 4657 to identify process creation?",
+      "options": [
+        "4624",
+        "4688",
+        "4663",
+        "4672"
+      ],
+      "correctAnswer": 1,
+      "explanation": "4688 provides process creation details.",
+      "objective": "Event correlation"
+    },
+    {
+      "id": "4657-INV-006",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "What should you verify after identifying the modifying executable?",
+      "options": [
+        "Digital signature",
+        "Screen resolution",
+        "Disk capacity",
+        "BIOS version"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Signature verification helps distinguish legitimate software from malware.",
+      "objective": "Validate process"
+    },
+    {
+      "id": "4657-INV-007",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A registry Run key was modified by powershell.exe. What is the best next step?",
+      "options": [
+        "Ignore it",
+        "Correlate with Event ID 4688 and review command line",
+        "Reboot the endpoint",
+        "Delete the event"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Reviewing process context helps determine malicious intent.",
+      "objective": "Investigate persistence"
+    },
+    {
+      "id": "4657-INV-008",
+      "difficulty": "Easy",
+      "type": "true_false",
+      "question": "True or False: Registry path determines investigation priority.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Sensitive paths deserve immediate attention.",
+      "objective": "Prioritize alerts"
+    },
+    {
+      "id": "4657-INV-009",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why is business context important during investigation?",
+      "options": [
+        "It determines CPU speed",
+        "It helps determine whether the change is expected",
+        "It changes the event ID",
+        "It changes the SID"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Expected administrative or software changes may be legitimate.",
+      "objective": "Apply context"
+    },
+    {
+      "id": "4657-INV-010",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which combination provides the strongest investigation context?",
+      "options": [
+        "Object Name + Process Name + Old/New Values",
+        "Computer Name + Domain",
+        "Logon ID + Handle ID",
+        "Event Record ID + Task Category"
+      ],
+      "correctAnswer": 0,
+      "explanation": "These fields explain where, who, and what changed.",
+      "objective": "Correlate evidence"
+    },
+    {
+      "id": "4657-INV-011",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "If the modifying process is msiexec.exe during approved software deployment, the change is most likely:",
+      "options": [
+        "Suspicious",
+        "Legitimate",
+        "Credential theft",
+        "Persistence"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Software installers commonly modify the registry.",
+      "objective": "Recognize benign activity"
+    },
+    {
+      "id": "4657-INV-012",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which action should be taken if Windows Defender registry settings were disabled unexpectedly?",
+      "options": [
+        "Close the alert",
+        "Escalate for investigation",
+        "Ignore if SYSTEM performed it",
+        "Delete the registry"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Unexpected security-control changes require investigation.",
+      "objective": "Respond appropriately"
+    },
+    {
+      "id": "4657-INV-013",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which investigation step helps determine whether the process itself is malicious?",
+      "options": [
+        "Verify signature, hash, and file path",
+        "Review monitor settings",
+        "Check printer status",
+        "Compare RAM usage"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Authenticity checks are essential.",
+      "objective": "Validate executable"
+    },
+    {
+      "id": "4657-INV-014",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which field tells you who performed the modification?",
+      "options": [
+        "Security ID",
+        "Object Name",
+        "Old Value",
+        "Process ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Security ID identifies the account.",
+      "objective": "Identify actor"
+    },
+    {
+      "id": "4657-INV-015",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "What is the primary goal of correlating multiple events?",
+      "options": [
+        "Increase log size",
+        "Build the complete attack timeline",
+        "Reduce CPU usage",
+        "Clear event logs"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Correlation provides investigation context.",
+      "objective": "Timeline building"
+    },
+    {
+      "id": "4657-INV-016",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A signed vendor service modifies its own registry key after an update. What is the most likely conclusion?",
+      "options": [
+        "Likely legitimate but verify change context",
+        "Definitely malware",
+        "Delete the service",
+        "Block the executable"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Trusted software often updates its own configuration.",
+      "objective": "Context-based analysis"
+    },
+    {
+      "id": "4657-INV-017",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which registry modification generally deserves the highest priority?",
+      "options": [
+        "Winlogon",
+        "Wallpaper",
+        "Keyboard Layout",
+        "Mouse settings"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Winlogon changes can enable persistence.",
+      "objective": "Prioritize risk"
+    },
+    {
+      "id": "4657-INV-018",
+      "difficulty": "Easy",
+      "type": "true_false",
+      "question": "True or False: Every Event ID 4657 indicates malicious activity.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Many registry modifications are legitimate.",
+      "objective": "Avoid false positives"
+    },
+    {
+      "id": "4657-INV-019",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "What should an analyst do before closing a 4657 alert?",
+      "options": [
+        "Verify the change is expected, legitimate, and documented",
+        "Delete related logs",
+        "Reboot the host",
+        "Disable auditing"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Validate legitimacy before closure.",
+      "objective": "Case closure"
+    },
+    {
+      "id": "4657-INV-020",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why should analysts document investigation findings?",
+      "options": [
+        "To consume disk space",
+        "To support future investigations and auditing",
+        "To change event IDs",
+        "To modify registry values"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Documentation improves consistency and auditability.",
+      "objective": "Documentation"
+    }
+  ]
+}

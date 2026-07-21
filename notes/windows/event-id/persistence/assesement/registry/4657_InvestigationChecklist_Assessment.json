@@ -1,0 +1,189 @@
+{
+  "assessmentName": "4657_InvestigationChecklist",
+  "eventId": 4657,
+  "segment": "Investigation Checklist",
+  "timeLimit": 15,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-CHK-001",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which checklist item should be verified before deciding whether a registry modification is suspicious?",
+      "options": [
+        "Registry path sensitivity",
+        "Windows build number",
+        "Available disk space",
+        "Monitor resolution"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The modified registry path largely determines the security impact.",
+      "objective": "Prioritize checklist"
+    },
+    {
+      "id": "4657-CHK-002",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A Run key was modified by powershell.exe. According to a structured investigation checklist, what is the best next action?",
+      "options": [
+        "Validate the process, correlate with 4688, and compare Old/New values",
+        "Immediately delete the Run key",
+        "Ignore because the change is complete",
+        "Only verify the Security ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Multiple checklist items should be completed before concluding.",
+      "objective": "Follow checklist"
+    },
+    {
+      "id": "4657-CHK-003",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which checklist item best determines exactly what configuration changed?",
+      "options": [
+        "Compare Old Value and New Value",
+        "Review the Handle ID",
+        "Review the Event Record ID",
+        "Check Task Category"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The before/after comparison reveals the exact modification.",
+      "objective": "Assess impact"
+    },
+    {
+      "id": "4657-CHK-004",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which combination provides the strongest evidence before closing an alert?",
+      "options": [
+        "Expected registry path, trusted process, approved change window, and matching business context",
+        "SYSTEM account and REG_SZ value",
+        "Handle ID and Logon ID only",
+        "Matching computer name and Event ID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Closure should be based on multiple validated checklist items.",
+      "objective": "Case closure"
+    },
+    {
+      "id": "4657-CHK-005",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why should the modifying executable be validated during the investigation?",
+      "options": [
+        "To confirm legitimacy through path, signature, and reputation",
+        "To identify the Windows edition",
+        "To determine registry value type",
+        "To identify the registry hive"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Executable validation reduces false positives.",
+      "objective": "Validate process"
+    },
+    {
+      "id": "4657-CHK-006",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which checklist step is most effective for identifying persistence?",
+      "options": [
+        "Review whether the modified registry path is a known startup or authentication location",
+        "Verify the event provider",
+        "Check the event version",
+        "Review the Event Record Number"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Known persistence paths deserve special attention.",
+      "objective": "Persistence review"
+    },
+    {
+      "id": "4657-CHK-007",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "What is the primary purpose of reviewing nearby security events (4688, 4624, 4672)?",
+      "options": [
+        "Build the attack timeline and understand context",
+        "Reduce event log size",
+        "Determine registry value type",
+        "Identify Windows updates"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Correlation is a key checklist activity.",
+      "objective": "Correlation"
+    },
+    {
+      "id": "4657-CHK-008",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which checklist item most helps distinguish a legitimate software update from malware?",
+      "options": [
+        "Business justification supported by trusted process execution",
+        "Presence of a Handle ID",
+        "REG_SZ registry type",
+        "SYSTEM account alone"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Expected business activity plus trusted execution is a strong legitimacy indicator.",
+      "objective": "Context validation"
+    },
+    {
+      "id": "4657-CHK-009",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "An analyst has verified the registry path, process, user, and value change. What important checklist item remains before closure?",
+      "options": [
+        "Check for additional persistence or related alerts",
+        "Export the Security log",
+        "Restart the endpoint",
+        "Disable auditing"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Always ensure there are no related indicators.",
+      "objective": "Complete investigation"
+    },
+    {
+      "id": "4657-CHK-010",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which checklist sequence reflects the best investigation workflow?",
+      "options": [
+        "Registry Path \u2192 Value Changed \u2192 Process \u2192 Old/New Values \u2192 Correlation \u2192 Business Context",
+        "Process \u2192 Close Alert \u2192 Registry Path \u2192 Values",
+        "User \u2192 Restart Host \u2192 Close Case",
+        "Old Value \u2192 Event Record ID \u2192 Registry Type"
+      ],
+      "correctAnswer": 0,
+      "explanation": "A structured workflow ensures consistent investigations.",
+      "objective": "Follow methodology"
+    },
+    {
+      "id": "4657-CHK-011",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "True or False: An expected registry change should still be documented before closing the case.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Documentation supports future audits and investigations.",
+      "objective": "Documentation"
+    },
+    {
+      "id": "4657-CHK-012",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which missing checklist item is most likely to result in a false negative?",
+      "options": [
+        "Failing to review related alerts and persistence mechanisms",
+        "Not recording the Handle ID",
+        "Ignoring the event version",
+        "Ignoring the Task Category"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Related alerts may reveal a broader attack.",
+      "objective": "Avoid false negatives"
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 import "./globals.css"
-import Sidebar from "@/components/Sidebar"
-import SearchBar from "@/components/SearchBar"
 import { AuthProvider } from "@/components/AuthProvider"
 import { getNotesTree, getAllNotes } from "@/lib/notes"
 import CommunicationHub from "@/components/communication/CommunicationHub"
 import GlobalCallUI from "@/components/communication/GlobalCallUI"
+import FocusModeLayout from "@/components/FocusModeLayout"
+import MouseGlow from "@/components/MouseGlow"
 
 export default function RootLayout({
   children,
@@ -17,21 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <MouseGlow />
         <AuthProvider>
-          <div className="flex min-h-screen">
-            <div className="flex flex-col md:flex-row flex-1">
-              <Sidebar tree={tree} />
-              <main className="flex-1 min-w-0 bg-[#f4f7fb]">
-                <SearchBar notes={allNotes} />
-                <div className="p-4 md:p-8">
-                  {children}
-                  <footer className="mt-10 text-center text-sm text-slate-500 py-6">
-                    © 2026 SOCForge. All rights reserved.
-                  </footer>
-                </div>
-              </main>
-            </div>
-          </div>
+          <FocusModeLayout tree={tree} notes={allNotes}>
+            {children}
+          </FocusModeLayout>
           <CommunicationHub />
           <GlobalCallUI />
         </AuthProvider>

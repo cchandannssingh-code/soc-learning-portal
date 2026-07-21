@@ -1,14 +1,16 @@
 "use client"
 
 import { useState } from "react"
+import type { ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { Note } from "@/lib/notes"
 
 interface SearchBarProps {
   notes: Note[]
+  action?: ReactNode
 }
 
-export default function SearchBar({ notes }: SearchBarProps) {
+export default function SearchBar({ notes, action }: SearchBarProps) {
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("")
   const [isFocused, setIsFocused] = useState(false)
@@ -57,7 +59,8 @@ export default function SearchBar({ notes }: SearchBarProps) {
 
   return (
     <div className="relative w-full mt-16 md:mt-0 px-4 md:px-8 py-4 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
-      <div className="relative">
+      <div className="mx-auto flex max-w-6xl items-center gap-3">
+        <div className="relative min-w-0 flex-1">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
           <svg className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -73,6 +76,8 @@ export default function SearchBar({ notes }: SearchBarProps) {
           onKeyDown={handleKeyDown}
           className="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
         />
+        </div>
+        {action}
       </div>
 
       {isFocused && searchTerm && filteredNotes.length > 0 && (

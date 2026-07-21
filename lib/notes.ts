@@ -9,6 +9,23 @@ export interface Note {
   slug: string
   title: string
   content: string
+  learning: LearningMetadata
+}
+
+export interface LearningMetadata {
+  id?: string
+  eventId?: string
+  category?: string
+  subcategory?: string
+  difficulty?: string
+  estimatedReadingTime?: number
+  estimatedAssessmentTime?: number
+  objectives: string[]
+  assessmentId?: string
+  scenarioId?: string
+  splunkLabId?: string
+  threatHuntId?: string
+  resources: Record<string, string>
 }
 
 export interface AssessmentQuestion {
@@ -24,11 +41,15 @@ export interface Assessment {
   slug: string
   title: string
   questions: AssessmentQuestion[]
+  resourceId?: string
+  durationMinutes?: number
 }
 
 interface ParsedAssessment {
   title?: string
   questions: AssessmentQuestion[]
+  resourceId?: string
+  durationMinutes?: number
 }
 
 export interface TreeItem {
@@ -38,6 +59,42 @@ export interface TreeItem {
   children?: TreeItem[]
   note?: Note
   assessment?: Assessment
+}
+
+function asNonEmptyString(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() ? value.trim() : undefined
+}
+
+function asPositiveNumber(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : undefined
+}
+
+function normalizeLearningMetadata(data: Record<string, unknown>): LearningMetadata {
+  const resources = data.resources && typeof data.resources === "object" && !Array.isArray(data.resources)
+    ? Object.fromEntries(
+        Object.entries(data.resources as Record<string, unknown>)
+          .map(([resourceType, resourceId]) => [resourceType, asNonEmptyString(resourceId)] as const)
+          .filter((entry): entry is readonly [string, string] => Boolean(entry[1])),
+      )
+    : {}
+
+  return {
+    id: asNonEmptyString(data.id),
+    eventId: asNonEmptyString(data.eventId) || (typeof data.eventId === "number" ? String(data.eventId) : undefined),
+    category: asNonEmptyString(data.category),
+    subcategory: asNonEmptyString(data.subcategory),
+    difficulty: asNonEmptyString(data.difficulty),
+    estimatedReadingTime: asPositiveNumber(data.estimatedReadingTime),
+    estimatedAssessmentTime: asPositiveNumber(data.estimatedAssessmentTime),
+    objectives: Array.isArray(data.objectives)
+      ? data.objectives.filter((objective): objective is string => typeof objective === "string" && Boolean(objective.trim()))
+      : [],
+    assessmentId: asNonEmptyString(data.assessmentId) || (typeof data.assessmentId === "number" ? String(data.assessmentId) : undefined),
+    scenarioId: asNonEmptyString(data.scenarioId) || (typeof data.scenarioId === "number" ? String(data.scenarioId) : undefined),
+    splunkLabId: asNonEmptyString(data.splunkLabId) || (typeof data.splunkLabId === "number" ? String(data.splunkLabId) : undefined),
+    threatHuntId: asNonEmptyString(data.threatHuntId) || (typeof data.threatHuntId === "number" ? String(data.threatHuntId) : undefined),
+    resources,
+  }
 }
 
 function titleFromAssessmentFilename(filename: string): string {
@@ -103,7 +160,13 @@ function normalizeAssessmentData(value: unknown): ParsedAssessment | undefined {
     return undefined
   }
 
-  const titleSource = value as { title?: unknown; assessmentName?: unknown }
+  const titleSource = value as {
+    title?: unknown
+    assessmentName?: unknown
+    assessmentId?: unknown
+    eventId?: unknown
+    timeLimit?: unknown
+  }
 
   return {
     title: typeof titleSource?.title === "string"
@@ -112,6 +175,12 @@ function normalizeAssessmentData(value: unknown): ParsedAssessment | undefined {
         ? titleSource.assessmentName
         : undefined,
     questions: normalizedQuestions as AssessmentQuestion[],
+    resourceId: asNonEmptyString(titleSource.assessmentId) || (typeof titleSource.assessmentId === "number"
+      ? String(titleSource.assessmentId)
+      : asNonEmptyString(titleSource.eventId) || (typeof titleSource.eventId === "number" ? String(titleSource.eventId) : undefined)),
+    durationMinutes: typeof titleSource.timeLimit === "number" && titleSource.timeLimit > 0
+      ? titleSource.timeLimit
+      : undefined,
   }
 }
 
@@ -150,6 +219,8 @@ function buildAssessment(filePath: string, folderPath: string): Assessment | und
     slug: normalizedPath.replace(/\.json$/i, ""),
     title: assessment.title || titleFromAssessmentFilename(filename),
     questions: assessment.questions,
+    resourceId: assessment.resourceId,
+    durationMinutes: assessment.durationMinutes,
   }
 }
 
@@ -234,6 +305,20 @@ function getAllFiles(dirPath: string, arrayOfFiles: string[] = []): string[] {
   return arrayOfFiles
 }
 
+function getAllAssessmentFiles(dirPath: string, files: string[] = []): string[] {
+  for (const file of fs.readdirSync(dirPath)) {
+    const fullPath = path.join(dirPath, file)
+
+    if (fs.statSync(fullPath).isDirectory()) {
+      getAllAssessmentFiles(fullPath, files)
+    } else if (file.toLowerCase().endsWith(".json")) {
+      files.push(fullPath)
+    }
+  }
+
+  return files
+}
+
 export function getAllNotes(): Note[] {
   const files = getAllFiles(notesDirectory)
 
@@ -248,6 +333,7 @@ export function getAllNotes(): Note[] {
       slug,
       title: data.title || parts[parts.length - 1],
       content,
+      learning: normalizeLearningMetadata(data),
     }
   })
 }
@@ -274,6 +360,7 @@ export function getNoteBySlug(slug: string): Note | null {
     slug,
     title: data.title || slug,
     content,
+    learning: normalizeLearningMetadata(data),
   }
 }
 
@@ -308,6 +395,7 @@ function buildTree(dirPath: string): TreeItem[] {
           slug,
           title: data.title || parts[parts.length - 1],
           content,
+          learning: normalizeLearningMetadata(data),
         },
       })
     } else if (file.toLowerCase().endsWith(".json")) {
@@ -357,6 +445,44 @@ export function getNotesTree(): TreeItem[] {
   return buildTree(notesDirectory)
 }
 
+export interface NavigationInfo {
+  previous: { slug: string; title: string; eventId?: string } | null
+  next: { slug: string; title: string; eventId?: string } | null
+}
+
+export function getNavigationForNote(slug: string): NavigationInfo {
+  const tree = getNotesTree()
+  const flatNotes: { slug: string; title: string; eventId?: string; type: "note" }[] = []
+
+  function flattenTree(items: TreeItem[]): void {
+    for (const item of items) {
+      if (item.type === "file" && item.note) {
+        flatNotes.push({
+          slug: item.note.slug,
+          title: item.note.title,
+          eventId: item.note.learning.eventId,
+          type: "note",
+        })
+      } else if (item.type === "folder" && item.children) {
+        flattenTree(item.children)
+      }
+    }
+  }
+
+  flattenTree(tree)
+
+  const currentIndex = flatNotes.findIndex((note) => note.slug === slug)
+
+  if (currentIndex === -1) {
+    return { previous: null, next: null }
+  }
+
+  return {
+    previous: currentIndex > 0 ? flatNotes[currentIndex - 1] : null,
+    next: currentIndex < flatNotes.length - 1 ? flatNotes[currentIndex + 1] : null,
+  }
+}
+
 export function getAssessmentsByPath(folderPath: string): Assessment[] {
   const exactFolderPath = findExactFolderPath(folderPath)
 
@@ -401,6 +527,21 @@ export function getAssessmentBySlug(slug: string): Assessment | undefined {
   }
 
   return buildAssessment(legacyAssessmentPath, slug)
+}
+
+export function getAssessmentByResourceId(resourceId: string): Assessment | undefined {
+  const normalizedId = resourceId.toLowerCase()
+
+  return getAllAssessmentFiles(notesDirectory)
+    .sort((first, second) => first.localeCompare(second))
+    .map((filePath) => buildAssessment(filePath, path.dirname(path.relative(notesDirectory, filePath).replace(/\\/g, "/"))))
+    .find((assessment) => assessment?.resourceId?.toLowerCase() === normalizedId)
+}
+
+export function getNoteByLearningId(id: string): Note | null {
+  const normalizedId = id.toLowerCase()
+
+  return getAllNotes().find((note) => note.learning.id?.toLowerCase() === normalizedId) || null
 }
 
 export function getAssessmentByPath(folderPath: string): AssessmentQuestion[] | undefined {

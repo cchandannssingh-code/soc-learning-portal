@@ -1,0 +1,234 @@
+{
+  "assessmentName": "4657_RegistryFundamentals",
+  "eventId": 4657,
+  "segment": "Registry Fundamentals",
+  "timeLimit": 15,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-REG-001",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "What is the primary purpose of the Windows Registry?",
+      "options": [
+        "Store system and application configuration",
+        "Store user documents",
+        "Manage network packets",
+        "Store event logs"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The registry is a hierarchical configuration database.",
+      "objective": "Understand the registry"
+    },
+    {
+      "id": "4657-REG-002",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which registry hive stores system-wide settings?",
+      "options": [
+        "HKCU",
+        "HKLM",
+        "HKCR",
+        "HKU"
+      ],
+      "correctAnswer": 1,
+      "explanation": "HKLM stores machine-wide settings.",
+      "objective": "Registry hives"
+    },
+    {
+      "id": "4657-REG-003",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which hive stores settings for the current user?",
+      "options": [
+        "HKLM",
+        "HKCR",
+        "HKCU",
+        "HKU"
+      ],
+      "correctAnswer": 2,
+      "explanation": "HKCU stores current user settings.",
+      "objective": "Registry hives"
+    },
+    {
+      "id": "4657-REG-004",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "\\REGISTRY\\MACHINE corresponds to which hive?",
+      "options": [
+        "HKCU",
+        "HKLM",
+        "HKCR",
+        "HKU"
+      ],
+      "correctAnswer": 1,
+      "explanation": "It maps to HKLM.",
+      "objective": "Path translation"
+    },
+    {
+      "id": "4657-REG-005",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "REG_SZ represents which data type?",
+      "options": [
+        "Binary",
+        "String",
+        "64-bit Integer",
+        "Multi String"
+      ],
+      "correctAnswer": 1,
+      "explanation": "REG_SZ is a string.",
+      "objective": "Registry types"
+    },
+    {
+      "id": "4657-REG-006",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which type stores a 32-bit integer?",
+      "options": [
+        "REG_DWORD",
+        "REG_QWORD",
+        "REG_BINARY",
+        "REG_SZ"
+      ],
+      "correctAnswer": 0,
+      "explanation": "REG_DWORD stores 32-bit integers.",
+      "objective": "Registry types"
+    },
+    {
+      "id": "4657-REG-007",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which type stores a 64-bit integer?",
+      "options": [
+        "REG_QWORD",
+        "REG_DWORD",
+        "REG_BINARY",
+        "REG_MULTI_SZ"
+      ],
+      "correctAnswer": 0,
+      "explanation": "REG_QWORD stores 64-bit integers.",
+      "objective": "Registry types"
+    },
+    {
+      "id": "4657-REG-008",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "REG_EXPAND_SZ is primarily used for:",
+      "options": [
+        "Encrypted data",
+        "Environment-variable strings",
+        "Images",
+        "Logs"
+      ],
+      "correctAnswer": 1,
+      "explanation": "It supports values like %SystemRoot%.",
+      "objective": "Registry types"
+    },
+    {
+      "id": "4657-REG-009",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Why is the registry path important during an investigation?",
+      "options": [
+        "Determines RAM usage",
+        "Determines security impact",
+        "Shows disk size",
+        "Shows CPU model"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Sensitive paths indicate higher risk.",
+      "objective": "Risk assessment"
+    },
+    {
+      "id": "4657-REG-010",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which hive contains file association information?",
+      "options": [
+        "HKCR",
+        "HKLM",
+        "HKCU",
+        "HKU"
+      ],
+      "correctAnswer": 0,
+      "explanation": "HKCR stores class and association data.",
+      "objective": "Registry hives"
+    },
+    {
+      "id": "4657-REG-011",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which hive contains loaded user profiles?",
+      "options": [
+        "HKLM",
+        "HKCR",
+        "HKU",
+        "HKCU"
+      ],
+      "correctAnswer": 2,
+      "explanation": "HKU contains user profile hives.",
+      "objective": "Registry hives"
+    },
+    {
+      "id": "4657-REG-012",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which statement about the registry is TRUE?",
+      "options": [
+        "Only stores startup programs",
+        "Hierarchical configuration database",
+        "Stores only security policies",
+        "Cannot be modified"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The registry stores configuration for Windows and applications.",
+      "objective": "Registry fundamentals"
+    },
+    {
+      "id": "4657-REG-013",
+      "difficulty": "Easy",
+      "type": "true_false",
+      "question": "True or False: The registry stores Windows service configuration.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Service configuration is stored in the registry.",
+      "objective": "Registry usage"
+    },
+    {
+      "id": "4657-REG-014",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which item is least likely to be stored in the registry?",
+      "options": [
+        "Application settings",
+        "User preferences",
+        "CPU cache",
+        "Service configuration"
+      ],
+      "correctAnswer": 2,
+      "explanation": "CPU cache is hardware-managed.",
+      "objective": "Registry scope"
+    },
+    {
+      "id": "4657-REG-015",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Why should analysts understand registry value types?",
+      "options": [
+        "To identify monitor size",
+        "To interpret changed data correctly",
+        "To estimate bandwidth",
+        "To identify CPU vendor"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Value types help interpret modifications.",
+      "objective": "Investigation"
+    }
+  ]
+}

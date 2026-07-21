@@ -9,9 +9,10 @@ import { useAuth } from "./AuthProvider"
 
 interface SidebarProps {
   tree: TreeItem[]
+  focusMode?: boolean
 }
 
-export default function Sidebar({ tree }: SidebarProps) {
+export default function Sidebar({ tree, focusMode = false }: SidebarProps) {
   const { logout, isAuthenticated } = useAuth()
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -67,6 +68,7 @@ export default function Sidebar({ tree }: SidebarProps) {
           border-r border-slate-200/80
           shadow-[4px_0_24px_rgba(0,0,0,0.015)]
 
+          ${focusMode ? "md:w-0 md:p-0 md:overflow-hidden md:border-r-0 md:opacity-0 md:-translate-x-full md:pointer-events-none" : ""}
           ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >

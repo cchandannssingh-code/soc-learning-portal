@@ -1,0 +1,161 @@
+{
+  "assessmentName": "4657_EventCorrelation",
+  "eventId": 4657,
+  "segment": "Event Correlation",
+  "timeLimit": 15,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-COR-001",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which event provides the strongest correlation to identify the process that later modified the registry (4657)?",
+      "options": [
+        "4688 Process Created",
+        "4624 Successful Logon",
+        "4663 Object Access",
+        "4672 Special Privileges"
+      ],
+      "correctAnswer": 0,
+      "explanation": "4688 provides the originating process and often the command line.",
+      "objective": "Correlate process creation"
+    },
+    {
+      "id": "4657-COR-002",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A 4657 event is followed by a 4698 event for the same user within one minute. What is the strongest conclusion?",
+      "options": [
+        "Multiple persistence mechanisms may be established",
+        "The registry change failed",
+        "The scheduled task caused the registry event automatically",
+        "The events are unrelated"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Multiple persistence techniques increase confidence of malicious activity.",
+      "objective": "Multi-event correlation"
+    },
+    {
+      "id": "4657-COR-003",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which sequence most strongly indicates malicious persistence?",
+      "options": [
+        "4624 \u2192 4688 (PowerShell) \u2192 4657 (Run Key)",
+        "4624 \u2192 4657 (Vendor Key) \u2192 4634",
+        "4688 (msiexec) \u2192 4657 (Application Key)",
+        "4672 \u2192 4657 (Printer Key)"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The combination of logon, suspicious process, and Run key modification is strongest.",
+      "objective": "Attack timeline"
+    },
+    {
+      "id": "4657-COR-004",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why is correlating Logon ID between events useful?",
+      "options": [
+        "It links actions to the same logon session",
+        "It identifies the registry hive",
+        "It confirms the registry value type",
+        "It determines the Windows version"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Logon ID ties related events to the same authenticated session.",
+      "objective": "Session correlation"
+    },
+    {
+      "id": "4657-COR-005",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A 4688 event shows reg.exe modifying Defender settings, followed by 4657. Which additional event adds the most investigation value?",
+      "options": [
+        "4672 Special Privileges Assigned",
+        "4634 Logoff",
+        "4647 User Logoff Initiated",
+        "4608 Windows Startup"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Privilege assignment helps determine whether the process had elevated rights.",
+      "objective": "Privilege correlation"
+    },
+    {
+      "id": "4657-COR-006",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "When correlating 4657 with 4624, the analyst is primarily trying to identify:",
+      "options": [
+        "The user and logon session behind the change",
+        "The registry value type",
+        "The executable signature",
+        "The registry handle"
+      ],
+      "correctAnswer": 0,
+      "explanation": "4624 identifies who authenticated before the activity.",
+      "objective": "User attribution"
+    },
+    {
+      "id": "4657-COR-007",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which correlation provides the highest confidence in a legitimate registry modification?",
+      "options": [
+        "4688 (trustedinstaller.exe) + 4657 (Vendor Key) + approved maintenance window",
+        "4688 (powershell.exe) + 4657 (Run Key)",
+        "4688 (cmd.exe) + 4657 (Winlogon)",
+        "4688 (reg.exe) + 4657 (Defender)"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Trusted installer activity during maintenance is expected.",
+      "objective": "Differentiate benign activity"
+    },
+    {
+      "id": "4657-COR-008",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why should timestamps always be reviewed during event correlation?",
+      "options": [
+        "To verify the attack timeline and event sequence",
+        "To identify the registry hive",
+        "To determine SID type",
+        "To identify value type"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Correct sequencing is essential during investigations.",
+      "objective": "Timeline analysis"
+    },
+    {
+      "id": "4657-COR-009",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A single 4657 event alone has lower confidence than a correlated timeline because:",
+      "options": [
+        "Context from surrounding events explains intent",
+        "4657 is always informational",
+        "4657 cannot identify registry changes",
+        "4688 replaces 4657"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Context determines whether a change is benign or malicious.",
+      "objective": "Evidence correlation"
+    },
+    {
+      "id": "4657-COR-010",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which combination would most likely justify immediate escalation?",
+      "options": [
+        "4624 (remote logon) \u2192 4688 (powershell.exe) \u2192 4657 (Winlogon) \u2192 Defender alert",
+        "4624 \u2192 4688 (msiexec.exe) \u2192 4657 (Vendor Key)",
+        "4624 \u2192 4657 (Application Setting)",
+        "4688 (services.exe) \u2192 4657 (Service Update)"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Multiple high-risk indicators together warrant urgent investigation.",
+      "objective": "Escalation decisions"
+    }
+  ]
+}

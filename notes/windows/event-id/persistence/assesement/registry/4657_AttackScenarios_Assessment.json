@@ -1,0 +1,309 @@
+{
+  "assessmentName": "4657_AttackScenarios",
+  "eventId": 4657,
+  "segment": "Attack Scenarios",
+  "timeLimit": 20,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-ATK-001",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Why do attackers commonly modify the Windows Registry?",
+      "options": [
+        "To establish persistence",
+        "To increase RAM",
+        "To format disks",
+        "To install drivers"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Registry modifications are a common persistence technique.",
+      "objective": "Persistence"
+    },
+    {
+      "id": "4657-ATK-002",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which registry location is frequently abused for startup persistence?",
+      "options": [
+        "CurrentVersion\\Run",
+        "Fonts",
+        "Console",
+        "Time Zones"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Run keys execute programs at logon.",
+      "objective": "Run key persistence"
+    },
+    {
+      "id": "4657-ATK-003",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "A 4688 event for powershell.exe is immediately followed by a 4657 event modifying a Run key. What is the most likely objective?",
+      "options": [
+        "Persistence",
+        "Printer installation",
+        "Disk cleanup",
+        "Time synchronization"
+      ],
+      "correctAnswer": 0,
+      "explanation": "PowerShell modifying Run keys often indicates persistence.",
+      "objective": "Attack chain"
+    },
+    {
+      "id": "4657-ATK-004",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Unexpected changes to Windows Defender registry settings may indicate:",
+      "options": [
+        "Security tool tampering",
+        "Wallpaper update",
+        "USB insertion",
+        "Browser update"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Attackers often disable or weaken Defender.",
+      "objective": "Defense evasion"
+    },
+    {
+      "id": "4657-ATK-005",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which ATT&CK tactic best fits registry-based persistence?",
+      "options": [
+        "Persistence",
+        "Discovery",
+        "Collection",
+        "Impact"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Registry Run keys are persistence mechanisms.",
+      "objective": "MITRE mapping"
+    },
+    {
+      "id": "4657-ATK-006",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A registry change enables Remote Desktop through the Terminal Server key. What attacker objective does this support?",
+      "options": [
+        "Remote access",
+        "Disk encryption",
+        "Privilege reduction",
+        "Software inventory"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Enabling RDP allows remote access.",
+      "objective": "RDP abuse"
+    },
+    {
+      "id": "4657-ATK-007",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Modification of service registry keys is commonly associated with:",
+      "options": [
+        "Service persistence",
+        "Wallpaper changes",
+        "Printer setup",
+        "User profile cleanup"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Attackers modify services for persistence.",
+      "objective": "Service abuse"
+    },
+    {
+      "id": "4657-ATK-008",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "IFEO Debugger registry changes are commonly used to:",
+      "options": [
+        "Hijack application execution",
+        "Store passwords",
+        "Increase CPU speed",
+        "Configure DNS"
+      ],
+      "correctAnswer": 0,
+      "explanation": "IFEO Debugger can redirect process execution.",
+      "objective": "IFEO abuse"
+    },
+    {
+      "id": "4657-ATK-009",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "AppInit_DLLs abuse is primarily associated with:",
+      "options": [
+        "DLL injection",
+        "Account creation",
+        "Firewall rules",
+        "Certificate enrollment"
+      ],
+      "correctAnswer": 0,
+      "explanation": "AppInit_DLLs can force DLL loading.",
+      "objective": "DLL injection"
+    },
+    {
+      "id": "4657-ATK-010",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Unexpected changes under the LSA registry path may indicate:",
+      "options": [
+        "Credential theft",
+        "Monitor calibration",
+        "Disk optimization",
+        "Patch installation"
+      ],
+      "correctAnswer": 0,
+      "explanation": "LSA modifications can enable credential theft.",
+      "objective": "Credential access"
+    },
+    {
+      "id": "4657-ATK-011",
+      "difficulty": "Easy",
+      "type": "true_false",
+      "question": "True or False: Every registry modification is malicious.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Many legitimate applications update the registry.",
+      "objective": "Avoid false positives"
+    },
+    {
+      "id": "4657-ATK-012",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which process modifying a Run key should receive higher scrutiny?",
+      "options": [
+        "powershell.exe",
+        "trustedinstaller.exe",
+        "msiexec.exe",
+        "svchost.exe"
+      ],
+      "correctAnswer": 0,
+      "explanation": "PowerShell is frequently abused by attackers.",
+      "objective": "Process analysis"
+    },
+    {
+      "id": "4657-ATK-013",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A scheduled task (4698) and a Run key modification (4657) occur together. What does this suggest?",
+      "options": [
+        "Multiple persistence mechanisms",
+        "Normal browsing",
+        "Windows theme update",
+        "Printer installation"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Attackers may establish redundant persistence.",
+      "objective": "Correlation"
+    },
+    {
+      "id": "4657-ATK-014",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "What should an analyst do after identifying suspicious registry persistence?",
+      "options": [
+        "Correlate with 4688 and other related events",
+        "Immediately delete the registry",
+        "Ignore if SYSTEM is involved",
+        "Restart the computer"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Correlate evidence before remediation.",
+      "objective": "Investigation"
+    },
+    {
+      "id": "4657-ATK-015",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which sequence is the strongest indicator of malicious persistence?",
+      "options": [
+        "4688 PowerShell \u2192 4657 Run Key \u2192 Repeated execution",
+        "4624 \u2192 4634",
+        "4720 \u2192 4722",
+        "4663 \u2192 5140"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The sequence reflects process execution followed by registry persistence.",
+      "objective": "Attack chain"
+    },
+    {
+      "id": "4657-ATK-016",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Registry modifications that disable antivirus are examples of:",
+      "options": [
+        "Defense evasion",
+        "Privilege escalation",
+        "Initial access",
+        "Exfiltration"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Disabling security tools is defense evasion.",
+      "objective": "MITRE tactic"
+    },
+    {
+      "id": "4657-ATK-017",
+      "difficulty": "Easy",
+      "type": "single",
+      "question": "Which registry location is most likely to affect startup behavior?",
+      "options": [
+        "Run",
+        "Fonts",
+        "Keyboard Layout",
+        "Colors"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Run keys execute automatically.",
+      "objective": "Startup"
+    },
+    {
+      "id": "4657-ATK-018",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "An unsigned executable modifies Winlogon values. What is the best assessment?",
+      "options": [
+        "Highly suspicious",
+        "Routine maintenance",
+        "Low priority",
+        "Expected update"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Unsigned executables changing Winlogon warrant immediate investigation.",
+      "objective": "Risk assessment"
+    },
+    {
+      "id": "4657-ATK-019",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Why do attackers sometimes use multiple registry persistence locations?",
+      "options": [
+        "To improve resilience if one method is removed",
+        "To increase RAM",
+        "To reduce log volume",
+        "To speed up Windows"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Multiple persistence methods improve survivability.",
+      "objective": "Persistence"
+    },
+    {
+      "id": "4657-ATK-020",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which combination is the strongest indicator of compromise?",
+      "options": [
+        "PowerShell + Defender tampering + Run key modification",
+        "Explorer changing wallpaper",
+        "Windows Update changing service settings",
+        "Signed installer updating software"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Multiple suspicious indicators together significantly increase confidence.",
+      "objective": "IOC correlation"
+    }
+  ]
+}

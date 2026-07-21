@@ -1,0 +1,161 @@
+{
+  "assessmentName": "4657_SeverityGuide",
+  "eventId": 4657,
+  "segment": "Severity Guide",
+  "timeLimit": 10,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-SEV-001",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which factor should have the greatest influence when assigning severity to Event ID 4657?",
+      "options": [
+        "The sensitivity of the modified registry path",
+        "The Windows version",
+        "The Event Record ID",
+        "The registry value type"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Severity is driven primarily by what registry location was modified.",
+      "objective": "Severity assessment"
+    },
+    {
+      "id": "4657-SEV-002",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A digitally signed process modifies HKLM\\...\\Winlogon outside an approved maintenance window. What is the most appropriate severity?",
+      "options": [
+        "High",
+        "Medium",
+        "Low",
+        "Informational"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Sensitive persistence locations deserve high priority even if the process is signed.",
+      "objective": "Risk prioritization"
+    },
+    {
+      "id": "4657-SEV-003",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "A trusted installer modifies an application-specific registry key during a scheduled software deployment. Which severity is most appropriate?",
+      "options": [
+        "Informational",
+        "Low",
+        "High",
+        "Critical"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Expected changes during approved maintenance are generally informational.",
+      "objective": "Recognize benign changes"
+    },
+    {
+      "id": "4657-SEV-004",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which registry modification should typically receive the highest priority?",
+      "options": [
+        "Winlogon configuration",
+        "Vendor application setting",
+        "User desktop preference",
+        "Recently opened documents"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Winlogon is a critical persistence location.",
+      "objective": "Critical paths"
+    },
+    {
+      "id": "4657-SEV-005",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Unexpected Windows Defender registry modifications should normally be classified as:",
+      "options": [
+        "High",
+        "Medium",
+        "Low",
+        "Informational"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Security control tampering requires prompt investigation.",
+      "objective": "Defense evasion"
+    },
+    {
+      "id": "4657-SEV-006",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A PowerShell process modifies a Run key immediately after a remote interactive logon. What is the best severity?",
+      "options": [
+        "High",
+        "Medium",
+        "Low",
+        "Informational"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Multiple suspicious indicators significantly increase risk.",
+      "objective": "Correlated severity"
+    },
+    {
+      "id": "4657-SEV-007",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which scenario is most likely to remain Low severity after validation?",
+      "options": [
+        "Signed installer updates its own registry settings during a change window",
+        "Unsigned process changes Winlogon",
+        "PowerShell modifies Defender",
+        "reg.exe creates Run-key persistence"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Context and change approval reduce risk.",
+      "objective": "Business context"
+    },
+    {
+      "id": "4657-SEV-008",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Why shouldn't severity be assigned based solely on the modifying account?",
+      "options": [
+        "The registry path, process context, and surrounding activity are equally important",
+        "SYSTEM accounts cannot modify the registry",
+        "User accounts always indicate malware",
+        "Only domain admins can modify the registry"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Severity should consider the complete context.",
+      "objective": "Holistic assessment"
+    },
+    {
+      "id": "4657-SEV-009",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which combination most justifies escalating a 4657 alert to Critical?",
+      "options": [
+        "Defender tampering + Winlogon persistence + suspicious process",
+        "Vendor update + signed installer",
+        "Application setting change + approved maintenance",
+        "Theme update + explorer.exe"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Multiple high-risk indicators together justify critical severity.",
+      "objective": "Escalation"
+    },
+    {
+      "id": "4657-SEV-010",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which severity assignment is the most appropriate for an unexplained LSA registry modification by an unsigned executable?",
+      "options": [
+        "Critical",
+        "High",
+        "Medium",
+        "Low"
+      ],
+      "correctAnswer": 0,
+      "explanation": "LSA modifications by unsigned executables strongly suggest credential-access or persistence activity.",
+      "objective": "Critical risk"
+    }
+  ]
+}

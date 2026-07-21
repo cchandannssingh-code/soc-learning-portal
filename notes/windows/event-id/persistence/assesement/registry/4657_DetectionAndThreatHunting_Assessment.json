@@ -1,0 +1,161 @@
+{
+  "assessmentName": "4657_DetectionAndThreatHunting",
+  "eventId": 4657,
+  "segment": "Detection & Threat Hunting",
+  "timeLimit": 20,
+  "passingScore": 70,
+  "shuffleQuestions": true,
+  "shuffleOptions": true,
+  "questions": [
+    {
+      "id": "4657-DET-001",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "What is the best initial hunt for startup persistence using Event ID 4657?",
+      "options": [
+        "EventID=4657 AND ObjectName contains \"CurrentVersion\\\\Run\"",
+        "EventID=4657 AND ProcessName=\"explorer.exe\"",
+        "EventID=4657 AND ObjectValueName contains \"Run\"",
+        "EventID=4657 AND SubjectUserName=\"SYSTEM\""
+      ],
+      "correctAnswer": 0,
+      "explanation": "Hunting on the registry path is more reliable than process or value names.",
+      "objective": "Hunt startup persistence"
+    },
+    {
+      "id": "4657-DET-002",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which detection is most likely to identify Defender tampering?",
+      "options": [
+        "EventID=4657 AND ObjectName contains \"Windows Defender\"",
+        "EventID=4657 AND ProcessName=\"MsMpEng.exe\"",
+        "EventID=4657 AND ObjectValueName contains \"Disable\"",
+        "EventID=4657 AND SecurityID=\"S-1-5-18\""
+      ],
+      "correctAnswer": 0,
+      "explanation": "Registry path provides the strongest indicator.",
+      "objective": "Detect Defender tampering"
+    },
+    {
+      "id": "4657-DET-003",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which signal provides the highest confidence that a registry change is malicious?",
+      "options": [
+        "PowerShell modifies HKLM\\...\\Run followed by Event ID 4688 correlation",
+        "SYSTEM modifies HKLM\\Software after Windows Update",
+        "msiexec.exe modifies an application registry key during installation",
+        "trustedinstaller.exe updates a service configuration during patching"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Process, location, and correlation together provide the strongest evidence.",
+      "objective": "Assess confidence"
+    },
+    {
+      "id": "4657-DET-004",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which field should be prioritized when creating a detection for persistence-related registry modifications?",
+      "options": [
+        "ObjectName",
+        "ObjectValueName",
+        "ProcessName",
+        "SecurityID"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The registry path identifies persistence locations.",
+      "objective": "Detection engineering"
+    },
+    {
+      "id": "4657-DET-005",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "A detection rule based only on ProcessName=powershell.exe is weaker because:",
+      "options": [
+        "PowerShell performs many legitimate administrative tasks",
+        "PowerShell cannot modify the registry",
+        "PowerShell never runs as SYSTEM",
+        "PowerShell events always generate false positives"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Context is required to reduce false positives.",
+      "objective": "Detection quality"
+    },
+    {
+      "id": "4657-DET-006",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which correlation most effectively reduces false positives?",
+      "options": [
+        "4657 + sensitive registry path + suspicious 4688 process",
+        "4657 + SYSTEM account",
+        "4657 + REG_SZ value type",
+        "4657 + Handle ID present"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Combining multiple strong indicators improves fidelity.",
+      "objective": "Correlation"
+    },
+    {
+      "id": "4657-DET-007",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "While threat hunting, which registry path deserves the highest review priority?",
+      "options": [
+        "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+        "HKLM\\Software\\Vendor\\Application",
+        "HKCU\\Software\\Microsoft\\Windows",
+        "HKLM\\Software\\Classes"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Run keys are common persistence locations.",
+      "objective": "Prioritize hunting"
+    },
+    {
+      "id": "4657-DET-008",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "Which hunting strategy is the most resilient across different malware families?",
+      "options": [
+        "Hunt modifications to known persistence registry paths",
+        "Hunt only powershell.exe",
+        "Hunt only unsigned executables",
+        "Hunt only administrator accounts"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Persistence paths are reused by many threat actors.",
+      "objective": "Threat hunting"
+    },
+    {
+      "id": "4657-DET-009",
+      "difficulty": "Medium",
+      "type": "single",
+      "question": "Which query is most likely to produce excessive false positives?",
+      "options": [
+        "All EventID=4657 events",
+        "4657 events for Winlogon",
+        "4657 events for Defender",
+        "4657 events for Run keys"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Filtering by sensitive paths greatly improves signal.",
+      "objective": "False positives"
+    },
+    {
+      "id": "4657-DET-010",
+      "difficulty": "Hard",
+      "type": "single",
+      "question": "What is the best next step after identifying a suspicious 4657 event during threat hunting?",
+      "options": [
+        "Correlate with process creation, user activity, and nearby security events",
+        "Delete the registry value immediately",
+        "Ignore if the account is SYSTEM",
+        "Suppress future 4657 alerts"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Evidence correlation should precede remediation.",
+      "objective": "Investigation"
+    }
+  ]
+}
