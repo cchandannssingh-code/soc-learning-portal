@@ -8,7 +8,8 @@ import {
   useCallback,
 } from "react";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
 import {
   addDoc,
@@ -37,6 +38,7 @@ export default function QuizPage({
   const { slug } = use(params);
 
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const sessionId = searchParams.get("session") || "default";
   const isModerator = searchParams.get("moderator") === "true";
@@ -61,6 +63,13 @@ export default function QuizPage({
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [warning, setWarning] = useState("");
   const [watermarkTime, setWatermarkTime] = useState("");
+  const [sessionEnded, setSessionEnded] = useState(false);
+
+  // Moderator authentication state
+  const [moderatorPassword, setModeratorPassword] = useState("");
+  const [moderatorAuthError, setModeratorAuthError] = useState("");
+  const [isModeratorAuthenticated, setIsModeratorAuthenticated] = useState(false);
+  const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
 
   // Refs
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -70,6 +79,61 @@ export default function QuizPage({
   const cameraViolationsRef = useRef(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+
+  /* =========================
+     MODERATOR AUTHENTICATION
+  ========================= */
+
+  // Check if moderator is already authenticated in sessionStorage
+  useEffect(() => {
+    if (isModerator) {
+      const authStatus = sessionStorage.getItem("quizModeratorAuthenticated");
+      if (authStatus === "true") {
+        setIsModeratorAuthenticated(true);
+      }
+    }
+  }, [isModerator]);
+
+  const handleModeratorLogin = async () => {
+    setIsVerifyingPassword(true);
+    setModeratorAuthError("");
+
+    try {
+      const response = await fetch("/api/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password: moderatorPassword }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Store authentication in sessionStorage
+        sessionStorage.setItem("quizModeratorAuthenticated", "true");
+        setIsModeratorAuthenticated(true);
+        setModeratorPassword("");
+      } else {
+        setModeratorAuthError("Incorrect password.");
+        setModeratorPassword("");
+      }
+    } catch (error) {
+      setModeratorAuthError("Authentication failed. Please try again.");
+      setModeratorPassword("");
+    } finally {
+      setIsVerifyingPassword(false);
+    }
+  };
+
+  const handleModeratorCancel = () => {
+    setModeratorPassword("");
+    setModeratorAuthError("");
+    // Redirect to participant join screen by removing moderator parameter
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.delete("moderator");
+    window.location.href = newUrl.toString();
+  };
 
   /* =========================
      WARNING TOAST
@@ -222,14 +286,14 @@ export default function QuizPage({
   }, [isModerator]);
 
   /* =========================
-     SESSION LISTENER
-  ========================= */
+       SESSION LISTENER
+    ========================= */
 
   useEffect(() => {
     const initSession = async () => {
       const existing = await getDoc(sessionDocRef);
       if (!existing.exists()) {
-        await setDoc(sessionDocRef, { started: false, startTime: null });
+        await setDoc(sessionDocRef, { started: false, startTime: null, active: true });
       }
     };
     initSession();
@@ -237,6 +301,14 @@ export default function QuizPage({
     const unsubscribe = onSnapshot(sessionDocRef, (snapshot) => {
       const data = snapshot.data();
       if (!data) return;
+      
+      // Check if session was ended by moderator
+      if (data.active === false && !isModerator) {
+        setSessionEnded(true);
+        setQuizStarted(false);
+        return;
+      }
+      
       if (data.started) {
         setQuizStarted(true);
         if (data.startTime) {
@@ -366,36 +438,50 @@ export default function QuizPage({
   };
 
   /* =========================
-     DELETE SESSION
-  ========================= */
+       STOP / DELETE SESSION
+    ========================= */
 
-  const deleteSession = async () => {
-    const confirmDelete = window.confirm(
-      "Delete this session and all related data?"
+  const stopSession = async () => {
+    const confirmStop = window.confirm(
+      "Stop this session? All participants will be kicked out."
     );
-    if (!confirmDelete) return;
+    if (!confirmStop) return;
 
     try {
-      const participantsSnapshot = await getDocs(
-        collection(db, participantsCollection)
+      // Mark session as inactive - this will kick out all participants
+      await setDoc(
+        sessionDocRef,
+        { active: false, stoppedAt: new Date() },
+        { merge: true }
       );
-      for (const participant of participantsSnapshot.docs) {
-        await deleteDoc(participant.ref);
-      }
 
-      const leaderboardSnapshot = await getDocs(
-        collection(db, leaderboardCollection)
-      );
-      for (const item of leaderboardSnapshot.docs) {
-        await deleteDoc(item.ref);
-      }
+      // Wait a moment for participants to see the change
+      setTimeout(async () => {
+        // Delete all participants
+        const participantsSnapshot = await getDocs(
+          collection(db, participantsCollection)
+        );
+        for (const participant of participantsSnapshot.docs) {
+          await deleteDoc(participant.ref);
+        }
 
-      await deleteDoc(sessionDocRef);
-      alert("Session deleted successfully");
-      window.location.reload();
+        // Delete leaderboard
+        const leaderboardSnapshot = await getDocs(
+          collection(db, leaderboardCollection)
+        );
+        for (const item of leaderboardSnapshot.docs) {
+          await deleteDoc(item.ref);
+        }
+
+        // Delete session document
+        await deleteDoc(sessionDocRef);
+        
+        alert("Session stopped and deleted successfully");
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       console.error(error);
-      alert("Failed to delete session");
+      alert("Failed to stop session");
     }
   };
 
@@ -427,10 +513,103 @@ export default function QuizPage({
      GUARDS
   ========================= */
 
+  /* =========================
+       SESSION ENDED SCREEN
+    ========================= */
+
+  if (sessionEnded && !isModerator) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center p-8">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-10 max-w-xl w-full text-center">
+          <h1 className="text-5xl font-bold mb-6 text-red-500">
+            Session no longer available
+          </h1>
+          <p className="text-gray-400 text-xl mb-8">
+            The moderator has stopped this quiz session.
+          </p>
+          <p className="text-gray-500 mb-8">
+            You have been removed from the session.
+          </p>
+          <button
+            onClick={() => {
+              // Clear session state and stay on the same page
+              setSessionEnded(false);
+              setJoined(false);
+              setName("");
+              setQuizStarted(false);
+              setSubmitted(false);
+              setScore(null);
+              setAnswers([]);
+              setCurrentQuestion(0);
+              
+              // Remove session parameter from URL without navigating away
+              const newUrl = new URL(window.location.href);
+              newUrl.searchParams.delete("session");
+              window.history.replaceState({}, "", newUrl.toString());
+            }}
+            className="inline-block bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl text-xl font-bold"
+          >
+            Return to Quiz Portal
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (!quizData) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center text-4xl font-bold">
         Quiz Not Found
+      </div>
+    );
+  }
+
+  /* =========================
+     MODERATOR PASSWORD SCREEN
+  ========================= */
+
+  if (isModerator && !isModeratorAuthenticated) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center p-8">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-10 max-w-md w-full">
+          <h1 className="text-4xl font-bold mb-2 text-center">Moderator Access</h1>
+          <p className="text-gray-400 text-center mb-8">Enter moderator password.</p>
+
+          <div className="space-y-4">
+            <input
+              type="password"
+              placeholder="Password"
+              value={moderatorPassword}
+              onChange={(e) => {
+                setModeratorPassword(e.target.value);
+                setModeratorAuthError("");
+              }}
+              onKeyDown={(e) => e.key === "Enter" && handleModeratorLogin()}
+              className="w-full p-4 rounded bg-zinc-800 border border-zinc-700"
+              autoFocus
+            />
+
+            {moderatorAuthError && (
+              <p className="text-red-500 text-center">{moderatorAuthError}</p>
+            )}
+
+            <div className="flex gap-4">
+              <button
+                onClick={handleModeratorCancel}
+                className="flex-1 bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-xl text-lg font-bold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleModeratorLogin}
+                disabled={!moderatorPassword.trim() || isVerifyingPassword}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl text-lg font-bold disabled:opacity-50"
+              >
+                {isVerifyingPassword ? "Verifying..." : "Unlock"}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -537,7 +716,7 @@ export default function QuizPage({
                 </button>
               )}
               <button
-                onClick={deleteSession}
+                onClick={stopSession}
                 className="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-xl text-xl font-bold"
               >
                 Stop / Delete Session
