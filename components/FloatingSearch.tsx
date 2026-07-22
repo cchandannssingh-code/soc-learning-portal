@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
+import { createPortal } from "react-dom"
 import SearchBar from "@/components/SearchBar"
 import type { Note } from "@/lib/notes"
 
@@ -94,11 +95,16 @@ export default function FloatingSearch({ notes, action, searchBarRef: externalSe
     return null
   }
 
-  return (
-    <div
-      ref={floatingRef}
-      className="fixed top-4 right-4 z-50 flex items-center gap-2"
-    >
+  if (typeof document !== "undefined" && document.body) {
+    return createPortal(
+      <div
+        ref={floatingRef}
+        className="fixed top-20 right-12 z-50 flex items-center gap-2 md:top-4 md:right-12"
+        style={{
+          top: 'calc(env(safe-area-inset-top, 0px) + 5rem)',
+          right: 'calc(env(safe-area-inset-right, 0px) + 3rem)',
+        }}
+      >
       {isExpanded ? (
         <div
           className="animate-in fade-in slide-in-from-top-2 duration-200"
@@ -106,14 +112,14 @@ export default function FloatingSearch({ notes, action, searchBarRef: externalSe
             animation: "fadeIn 200ms ease-out, slideDown 200ms ease-out",
           }}
         >
-          <div className="relative w-[600px] max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl shadow-2xl p-4">
+          <div className="relative w-fit md:w-[600px] max-w-[calc(100vw-2rem)] bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl shadow-2xl p-4">
             <SearchBar notes={notes} action={renderAction} />
           </div>
         </div>
       ) : (
         <button
           onClick={handleExpand}
-          className="group flex h-12 w-12 items-center justify-center rounded-full bg-slate-900/90 border border-emerald-500/30 text-emerald-400 shadow-lg transition-all duration-200 hover:border-emerald-400/60 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] hover:scale-110 active:scale-95"
+          className="group flex h-12 w-12 items-center justify-center rounded-full bg-slate-900/90 md:bg-transparent border border-emerald-500/30 md:border-emerald-500/50 text-emerald-400 shadow-lg md:shadow-none transition-all duration-200 hover:border-emerald-400/60 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] md:hover:shadow-none md:hover:scale-110 hover:scale-110 active:scale-95"
           style={{
             animation: "breathingGlow 3s ease-in-out infinite",
           }}
@@ -124,16 +130,18 @@ export default function FloatingSearch({ notes, action, searchBarRef: externalSe
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            strokeWidth={2}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
           </svg>
         </button>
       )}
     </div>
+    ,
+    document.body
   )
+  }
+
+  return null
 }
