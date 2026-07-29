@@ -1,0 +1,280 @@
+[
+  {
+  "id": "windows-services-assessment",
+  "title": "Windows Services Assessment",
+  "description": "Validate your understanding of Windows Services through knowledge-based, practical, and investigation-focused questions.",
+  "module": "Windows Services",
+  "difficulty": "Intermediate",
+  "estimatedTime": {
+    "min": 45,
+    "max": 60,
+    "unit": "minutes"
+  },
+  "passingScore": 80,
+  "prerequisites": [
+    "Complete Windows Services Module"
+  ],
+  "goal": "Demonstrate your understanding of Windows Services and your ability to investigate Service-related incidents.",
+  "sections": [
+    {
+      "id": "knowledge",
+      "title": "Knowledge Check",
+      "description": "Choose the best answer.",
+      "questionCount": 20,
+      "questions": [
+        {
+          "id": "WS-K-001",
+          "type": "multiple-choice",
+          "difficulty": "easy",
+          "question": "What component manages Windows Services?",
+          "options": [
+            {
+              "id": "A",
+              "text": "svchost.exe"
+            },
+            {
+              "id": "B",
+              "text": "services.exe"
+            },
+            {
+              "id": "C",
+              "text": "lsass.exe"
+            },
+            {
+              "id": "D",
+              "text": "winlogon.exe"
+            }
+          ],
+          "correctAnswer": "B",
+          "explanation": "services.exe hosts the Service Control Manager (SCM), which manages Windows Services.",
+          "tags": [
+            "architecture",
+            "services",
+            "scm"
+          ]
+        },
+        {
+          "id": "WS-K-002",
+          "type": "multiple-choice",
+          "difficulty": "easy",
+          "question": "Where is Service configuration stored?",
+          "options": [
+            {
+              "id": "A",
+              "text": "File System"
+            },
+            {
+              "id": "B",
+              "text": "Windows Registry"
+            },
+            {
+              "id": "C",
+              "text": "BIOS"
+            },
+            {
+              "id": "D",
+              "text": "Event Viewer"
+            }
+          ],
+          "correctAnswer": "B",
+          "tags": [
+            "registry",
+            "configuration"
+          ]
+        },
+        {
+          "id": "WS-K-003",
+          "type": "multiple-choice",
+          "difficulty": "easy",
+          "question": "Which Registry value specifies the executable launched by a Service?",
+          "options": [
+            {
+              "id": "A",
+              "text": "ObjectName"
+            },
+            {
+              "id": "B",
+              "text": "Start"
+            },
+            {
+              "id": "C",
+              "text": "ImagePath"
+            },
+            {
+              "id": "D",
+              "text": "Type"
+            }
+          ],
+          "correctAnswer": "C",
+          "tags": [
+            "registry",
+            "imagepath"
+          ]
+        },
+        {
+          "id": "WS-K-004",
+          "type": "multiple-choice",
+          "difficulty": "easy",
+          "question": "Which Service Account has the highest local privileges?",
+          "options": [
+            {
+              "id": "A",
+              "text": "LocalService"
+            },
+            {
+              "id": "B",
+              "text": "NetworkService"
+            },
+            {
+              "id": "C",
+              "text": "LocalSystem"
+            },
+            {
+              "id": "D",
+              "text": "Guest"
+            }
+          ],
+          "correctAnswer": "C",
+          "tags": [
+            "accounts"
+          ]
+        },
+        {
+          "id": "WS-K-005",
+          "type": "true-false",
+          "difficulty": "easy",
+          "question": "The command 'sc qc' displays the configuration of a Windows Service.",
+          "correctAnswer": true,
+          "explanation": "The 'sc qc' command queries the configuration of a service."
+        }
+      ]
+    },
+    {
+      "id": "practical",
+      "title": "Practical Analysis",
+      "questionCount": 10,
+      "questions": [
+        {
+          "id": "WS-P-001",
+          "type": "analysis",
+          "difficulty": "medium",
+          "scenario": {
+            "ImagePath": "C:\\Users\\Public\\Updater.exe",
+            "StartupType": "Automatic",
+            "Account": "LocalSystem"
+          },
+          "tasks": [
+            "Is this suspicious?",
+            "Why?",
+            "What additional evidence would you collect?"
+          ],
+          "rubric": [
+            "Recognizes suspicious path",
+            "Explains LocalSystem risk",
+            "Requests supporting evidence"
+          ]
+        },
+        {
+          "id": "WS-P-002",
+          "type": "analysis",
+          "difficulty": "medium",
+          "scenario": {
+            "EventID": 7045
+          },
+          "tasks": [
+            "What does this event indicate?",
+            "Is it always malicious?",
+            "What would you investigate next?"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "investigation",
+      "title": "Investigation",
+      "questionCount": 5,
+      "questions": [
+        {
+          "id": "WS-I-001",
+          "type": "case-study",
+          "difficulty": "hard",
+          "artifacts": [
+            "Event ID 7045",
+            "Unsigned Executable",
+            "User Directory",
+            "Outbound Connection"
+          ],
+          "task": "Build a short investigation summary.",
+          "expectedSkills": [
+            "Evidence Correlation",
+            "Timeline",
+            "Root Cause"
+          ]
+        },
+        {
+          "id": "WS-I-002",
+          "type": "short-answer",
+          "difficulty": "medium",
+          "question": "A Service suddenly stops every hour. What information would you collect?"
+        },
+        {
+          "id": "WS-I-003",
+          "type": "short-answer",
+          "difficulty": "medium",
+          "question": "A Service executable has a valid Microsoft signature. Can it still be abused? Explain."
+        }
+      ]
+    },
+    {
+      "id": "scenario",
+      "title": "Final Scenario",
+      "questionCount": 1,
+      "questions": [
+        {
+          "id": "WS-S-001",
+          "type": "capstone",
+          "difficulty": "expert",
+          "title": "Rogue Windows Service Investigation",
+          "evidence": [
+            "Event ID 7045",
+            "Event ID 4688",
+            "PowerShell History",
+            "Registry Export",
+            "Process Tree",
+            "Network Connections"
+          ],
+          "deliverables": [
+            "Executive Summary",
+            "Timeline",
+            "Evidence Table",
+            "Root Cause",
+            "MITRE ATT&CK Mapping",
+            "Indicators of Compromise",
+            "Containment Plan",
+            "Detection Recommendations"
+          ],
+          "gradingCriteria": [
+            "Accuracy",
+            "Evidence-based reasoning",
+            "Investigation quality",
+            "Recommendations"
+          ]
+        }
+      ]
+    }
+  ],
+  "selfEvaluation": [
+    "Service Architecture",
+    "Service Configuration",
+    "Service Accounts",
+    "services.exe",
+    "svchost.exe",
+    "Service Security",
+    "Service Investigation",
+    "Service Detection"
+  ],
+  "completion": {
+    "nextModule": "Windows Registry",
+    "certificateEligible": true
+  }
+}]
